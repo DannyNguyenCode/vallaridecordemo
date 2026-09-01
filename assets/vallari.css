@@ -1,0 +1,180 @@
+/* ================================
+   REUSABLE CONTACT FORM
+   ================================ */
+
+.vallari-contact-form__panel {
+    box-sizing: border-box;
+
+    flex: 3 1 0;
+
+    min-width: 0;
+
+    padding: clamp(1.25rem, 3vw, 2rem);
+    font-family: Georgia, 'Times New Roman', serif;
+    border: 1px solid color-mix(in srgb,
+            var(--color-accent) 25%,
+            transparent);
+
+    border-radius: var(--radius-card, 1.5rem);
+
+    background:
+        color-mix(in srgb,
+            var(--color-foreground) 5%,
+            var(--color-background));
+}
+
+.vallari-contact-form {
+    margin: 0;
+
+    font-family: Georgia, 'Times New Roman', serif;
+}
+
+.vallari-contact-form__heading {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1rem, 2vw, 2rem);
+    font-weight: var(--font-heading--weight, 600);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+    margin-bottom: 1.5rem;
+}
+
+.vallari-contact-form__field {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 0.5rem;
+
+    margin-bottom: 1.25rem;
+}
+
+.vallari-contact-form__field label {
+    font-size: 0.875rem;
+
+    font-weight: 600;
+}
+
+.vallari-contact-form__field input,
+.vallari-contact-form__field textarea {
+    box-sizing: border-box;
+
+    width: 100%;
+
+    min-width: 0;
+
+    padding: 0.875rem 1rem;
+
+    border: 1px solid color-mix(in srgb,
+            var(--color-foreground) 55%,
+            var(--color-background));
+
+    border-radius:
+        var(--style-border-radius-inputs, 0.25rem);
+
+    background: var(--color-background);
+
+    color: var(--color-foreground);
+
+    font: inherit;
+
+    font-size: 1rem;
+
+    line-height: 1.5;
+}
+
+.vallari-contact-form__field textarea {
+    min-height: 10rem;
+
+    resize: vertical;
+}
+
+.vallari-contact-form__privacy {
+    margin: 0 0 1.25rem;
+
+    color: var(--color-text-muted);
+
+    font-size: 0.875rem;
+
+    line-height: 1.6;
+}
+
+.vallari-contact-form__privacy a {
+    color: inherit;
+
+    text-decoration: underline;
+
+    text-underline-offset: 0.2em;
+}
+
+.vallari-contact-form__button {
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 1rem;
+
+    min-height: 44px;
+
+    padding: 0.875rem 1.5rem;
+
+    border: 1px solid var(--color-button-background);
+
+    border-radius:
+        var(--style-border-radius-inputs, 0.25rem);
+
+    background: var(--color-button-background);
+
+    color: var(--color-button-text);
+
+    font: inherit;
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.vallari-contact-form__button:hover {
+    border-color: var(--color-button-background-hover);
+
+    background: var(--color-button-background-hover);
+}
+
+.vallari-contact-form__notice {
+    margin: 0 0 1.25rem;
+
+    padding: 1rem;
+
+    border: 1px solid currentColor;
+
+    border-radius:
+        var(--style-border-radius-inputs, 0.25rem);
+
+    line-height: 1.6;
+}
+
+.vallari-contact-form__notice p {
+    margin: 0;
+}
+
+.vallari-contact-form__notice ul {
+    margin: 0.5rem 0 0;
+
+    padding-inline-start: 1.25rem;
+}
+
+.vallari-contact-form :is(input,
+    textarea,
+    button,
+    a):focus-visible {
+    outline: 2px solid var(--color-foreground);
+
+    outline-offset: 3px;
+}
+
+@media (max-width: 749px) {
+    .vallari-contact-form__button {
+        width: 100%;
+    }
+}

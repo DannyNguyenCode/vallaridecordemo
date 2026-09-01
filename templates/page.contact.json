@@ -1,0 +1,34 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "vallari-contact-page",
+      "settings": {
+        "eyebrow": "CONTACT VALLARI DECOR",
+        "heading": "Let’s make something beautiful.",
+        "description": "<p>Have a question about a product, an order, or décor for your space? We’d love to hear from you.</p>",
+        "info_heading": "How can we help?",
+        "info_text": "<p>We are here to assist with any questions you might have regarding our curated collections, custom orders, or upcoming events.</p>",
+        "location": "Based in Toronto, Ontario, Canada.",
+        "faq_page": "faq",
+        "faq_link_label": "Check our FAQ",
+        "form_heading": "Send us a message.",
+        "products_link": "",
+        "products_link_label": "Explore our products",
+        "padding_top": 112,
+        "padding_bottom": 112
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

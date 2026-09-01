@@ -1,0 +1,42 @@
+<div id="about" class="vallari-section-inner">
+  <h2 class="vallari-section-heading">
+    {{ section.settings.heading | escape }}
+  </h2>
+
+  {% if section.settings.body != blank %}
+    <div class="vallari-prose">
+      {{ section.settings.body }}
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Vallari about",
+  "tag": "section",
+  "class": "vallari-content-section vallari-about",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "About Vallari Decor"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "About text",
+      "default": "<p>Vallari Decor is a Canadian e-commerce business specializing in décor for weddings, events, homes, and commercial spaces.</p><p>Since 2018, our business has grown primarily through online marketplaces, serving customers across Canada, the United States, and internationally.</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vallari about"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["index"]
+  }
+}
+{% endschema %}

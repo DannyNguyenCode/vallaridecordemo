@@ -1,0 +1,115 @@
+{% liquid
+  assign form_id = 'VallariHomeContact-' | append: section.id
+%}
+
+<div
+  id="contact"
+  class="vallari-container vallari-contact__inner"
+>
+  <div class="vallari-contact__intro">
+    <h2 class="vallari-contact__heading">
+      {{ section.settings.heading | escape }}
+    </h2>
+
+    {% if section.settings.description != blank %}
+      <p class="vallari-contact__description">
+        {{ section.settings.description | escape | newline_to_br }}
+      </p>
+    {% endif %}
+  </div>
+
+  {% render 'vallari-contact-form', form_id: form_id %}
+</div>
+
+{% stylesheet %}
+  .shopify-section.vallari-contact {
+    display: block;
+    background: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  .vallari-contact__inner {
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(2rem, 5vw, 4rem);
+    width: 100%;
+    max-width: var(--page-width, 80rem);
+    margin-inline: auto;
+    padding-inline: var(--page-margin, 20px);
+    padding-block: clamp(2.5rem, 5vw, 4rem);
+    scroll-margin-top: 6rem;
+  }
+
+  .vallari-contact__intro {
+    flex: 2 1 0;
+    min-width: 0;
+  }
+
+  .vallari-contact__heading {
+    margin: 0;
+    color: var(--color-accent);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: var(--font-heading--weight, 600);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .vallari-contact__description {
+    max-width: 42ch;
+    margin: 1rem 0 0;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  @media (min-width: 1024px) {
+    .vallari-contact__inner {
+      padding-inline: var(--page-margin-desktop, 32px);
+    }
+  }
+
+  @media (max-width: 749px) {
+    .vallari-contact__inner {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .vallari-contact__intro,
+    .vallari-contact-form__panel {
+      flex: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Vallari contact",
+  "tag": "section",
+  "class": "vallari-contact",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Get in touch"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Have a question about our décor or an order? Send us a message—we’d love to hear from you."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vallari contact"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["index"]
+  }
+}
+{% endschema %}

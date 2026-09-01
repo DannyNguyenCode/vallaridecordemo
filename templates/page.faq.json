@@ -1,0 +1,181 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "vallari_faq_page_yrX3Wk": {
+      "type": "vallari-faq-page",
+      "blocks": {
+        "question_qpw8Kn": {
+          "type": "question",
+          "settings": {
+            "topic": "orders",
+            "question": "Where do you ship?",
+            "answer": ""
+          }
+        },
+        "question_i3bpz9": {
+          "type": "question",
+          "settings": {
+            "topic": "orders",
+            "question": "How long will my order take to arrive?",
+            "answer": ""
+          }
+        },
+        "question_kwY3K8": {
+          "type": "question",
+          "settings": {
+            "topic": "orders",
+            "question": "How are fragile items packed?",
+            "answer": ""
+          }
+        },
+        "question_Pm6gFL": {
+          "type": "question",
+          "settings": {
+            "topic": "orders",
+            "question": "Can I track my order?",
+            "answer": ""
+          }
+        },
+        "question_CpcXn7": {
+          "type": "question",
+          "settings": {
+            "topic": "custom",
+            "question": "Do you create custom arrangements?",
+            "answer": ""
+          }
+        },
+        "question_6w3e4n": {
+          "type": "question",
+          "settings": {
+            "topic": "custom",
+            "question": "How far in advance should I enquire about event décor?",
+            "answer": ""
+          }
+        },
+        "question_RNjagE": {
+          "type": "question",
+          "settings": {
+            "topic": "custom",
+            "question": "Do you offer rentals for events?",
+            "answer": ""
+          }
+        },
+        "question_RMncRm": {
+          "type": "question",
+          "settings": {
+            "topic": "custom",
+            "question": "Can you match my wedding colours?",
+            "answer": ""
+          }
+        },
+        "question_cXYR6Y": {
+          "type": "question",
+          "settings": {
+            "topic": "care",
+            "question": "How do I keep artificial florals looking fresh?",
+            "answer": ""
+          }
+        },
+        "question_whWg4Q": {
+          "type": "question",
+          "settings": {
+            "topic": "care",
+            "question": "How should I care for dried botanicals?",
+            "answer": ""
+          }
+        },
+        "question_Kt4JgU": {
+          "type": "question",
+          "settings": {
+            "topic": "care",
+            "question": "How do I clean vases and candle holders?",
+            "answer": ""
+          }
+        },
+        "question_jxeDzk": {
+          "type": "question",
+          "settings": {
+            "topic": "care",
+            "question": "Can artificial florals go outdoors?",
+            "answer": ""
+          }
+        },
+        "question_KXRyzT": {
+          "type": "question",
+          "settings": {
+            "topic": "returns",
+            "question": "What is your return policy?",
+            "answer": ""
+          }
+        },
+        "question_7BbBaP": {
+          "type": "question",
+          "settings": {
+            "topic": "returns",
+            "question": "Do you sell wholesale?",
+            "answer": ""
+          }
+        },
+        "question_KGdmRD": {
+          "type": "question",
+          "settings": {
+            "topic": "returns",
+            "question": "Can I pick up my order in Toronto?",
+            "answer": ""
+          }
+        },
+        "question_EY8UBX": {
+          "type": "question",
+          "settings": {
+            "topic": "returns",
+            "question": "Do you offer gift cards?",
+            "answer": ""
+          }
+        }
+      },
+      "block_order": [
+        "question_qpw8Kn",
+        "question_i3bpz9",
+        "question_kwY3K8",
+        "question_Pm6gFL",
+        "question_CpcXn7",
+        "question_6w3e4n",
+        "question_RNjagE",
+        "question_RMncRm",
+        "question_cXYR6Y",
+        "question_whWg4Q",
+        "question_Kt4JgU",
+        "question_jxeDzk",
+        "question_KXRyzT",
+        "question_7BbBaP",
+        "question_KGdmRD",
+        "question_EY8UBX"
+      ],
+      "name": "Vallari FAQ page",
+      "settings": {
+        "eyebrow": "Frequently asked",
+        "heading": "Good questions, honest answers.",
+        "description": "Questions about décor, orders, and caring for your pieces? Start here.",
+        "orders_heading": "Orders & shipping",
+        "custom_heading": "Custom florals & events",
+        "care_heading": "Product care",
+        "returns_heading": "Returns & wholesale",
+        "help_heading": "Didn't find your answer?",
+        "help_description": "Have another question? Get in touch with Vallari Decor.",
+        "contact_label": "Contact us",
+        "contact_link": "shopify://pages/contact"
+      }
+    }
+  },
+  "order": [
+    "vallari_faq_page_yrX3Wk"
+  ]
+}

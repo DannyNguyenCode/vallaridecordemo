@@ -1,0 +1,212 @@
+{% comment %}
+  Vallari storefront filters.
+
+  Uses Shopify storefront filtering data from collection.filters.
+
+  Usage:
+  {% render 'vallari-facets', results: collection %}
+{% endcomment %}
+
+<form
+  class="vallari-facets"
+  id="VallariFacetsForm"
+  method="get"
+>
+  <div class="vallari-facets__header">
+    <h3 class="vallari-facets__title">Filters</h3>
+
+    {% if results.filters != empty %}
+      <a
+        href="{{ results.url | default: collection.url }}"
+        class="vallari-facets__clear"
+      >
+        Clear all
+      </a>
+    {% endif %}
+  </div>
+
+  {% for filter in results.filters %}
+    <details
+      class="vallari-facets__group"
+      {% if filter.active_values.size > 0 or filter.type == 'price_range' %}
+        open
+      {% endif %}
+    >
+      <summary class="vallari-facets__summary">
+        <span>
+          {{ filter.label }}
+
+          {% if filter.active_values.size > 0 %}
+            <span class="vallari-facets__count">
+              {{ filter.active_values.size }}
+            </span>
+          {% endif %}
+        </span>
+
+        <span
+          class="vallari-facets__chevron"
+          aria-hidden="true"
+        >
+          +
+        </span>
+      </summary>
+
+      <div class="vallari-facets__content">
+        {% case filter.type %}
+          {% when 'boolean' %}
+            <ul
+              class="vallari-facets__list"
+              role="list"
+            >
+              {% if filter.true_value %}
+                <li>
+                  <label class="vallari-facets__option">
+                    <input
+                      type="checkbox"
+                      name="{{ filter.param_name }}"
+                      value="{{ filter.true_value.value }}"
+                      {% if filter.true_value.active %}
+                        checked
+                      {% endif %}
+                      {% if filter.true_value.count == 0 and filter.true_value.active == false %}
+                        disabled
+                      {% endif %}
+                    >
+
+                    <span class="vallari-facets__option-label">
+                      {{ filter.true_value.label }}
+                    </span>
+
+                    <span class="vallari-facets__value-count">
+                      {{ filter.true_value.count }}
+                    </span>
+                  </label>
+                </li>
+              {% endif %}
+
+              {% if filter.false_value %}
+                <li>
+                  <label class="vallari-facets__option">
+                    <input
+                      type="checkbox"
+                      name="{{ filter.param_name }}"
+                      value="{{ filter.false_value.value }}"
+                      {% if filter.false_value.active %}
+                        checked
+                      {% endif %}
+                      {% if filter.false_value.count == 0 and filter.false_value.active == false %}
+                        disabled
+                      {% endif %}
+                    >
+
+                    <span class="vallari-facets__option-label">
+                      {{ filter.false_value.label }}
+                    </span>
+
+                    <span class="vallari-facets__value-count">
+                      {{ filter.false_value.count }}
+                    </span>
+                  </label>
+                </li>
+              {% endif %}
+            </ul>
+
+          {% when 'list' %}
+            <ul
+              class="vallari-facets__list"
+              role="list"
+            >
+              {% for value in filter.values %}
+                <li>
+                  <label class="vallari-facets__option">
+                    <input
+                      type="checkbox"
+                      name="{{ value.param_name }}"
+                      value="{{ value.value }}"
+                      {% if value.active %}
+                        checked
+                      {% endif %}
+                      {% if value.count == 0 and value.active == false %}
+                        disabled
+                      {% endif %}
+                    >
+
+                    <span class="vallari-facets__option-label">
+                      {{ value.label }}
+                    </span>
+
+                    <span class="vallari-facets__value-count">
+                      {{ value.count }}
+                    </span>
+                  </label>
+                </li>
+              {% endfor %}
+            </ul>
+
+          {% when 'price_range' %}
+            <div class="vallari-facets__price">
+              <div class="vallari-facets__price-field">
+                <label for="Filter-{{ filter.min_value.param_name }}"> Min </label>
+
+                <div class="vallari-facets__price-input">
+                  <span>
+                    {{ cart.currency.symbol }}
+                  </span>
+
+                  <input
+                    id="Filter-{{ filter.min_value.param_name }}"
+                    name="{{ filter.min_value.param_name }}"
+                    type="number"
+                    min="0"
+                    {% if filter.min_value.value %}
+                      value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                    {% endif %}
+                    placeholder="0"
+                  >
+                </div>
+              </div>
+
+              <span class="vallari-facets__price-separator"> to </span>
+
+              <div class="vallari-facets__price-field">
+                <label for="Filter-{{ filter.max_value.param_name }}"> Max </label>
+
+                <div class="vallari-facets__price-input">
+                  <span>
+                    {{ cart.currency.symbol }}
+                  </span>
+
+                  <input
+                    id="Filter-{{ filter.max_value.param_name }}"
+                    name="{{ filter.max_value.param_name }}"
+                    type="number"
+                    min="0"
+                    {% if filter.max_value.value %}
+                      value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                    {% endif %}
+                    placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}"
+                  >
+                </div>
+              </div>
+            </div>
+        {% endcase %}
+
+        {% if filter.active_values.size > 0 %}
+          <a
+            href="{{ filter.url_to_remove }}"
+            class="vallari-facets__reset"
+          >
+            Reset
+          </a>
+        {% endif %}
+      </div>
+    </details>
+  {% endfor %}
+
+  <button
+    class="vallari-facets__apply"
+    type="submit"
+  >
+    Apply filters
+  </button>
+</form>

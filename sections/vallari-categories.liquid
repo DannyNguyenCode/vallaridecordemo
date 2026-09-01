@@ -1,0 +1,301 @@
+{% if section.settings.collections != blank or section.settings.show_placeholders or request.design_mode %}
+  <div class="vallari-categories__inner">
+    <div class="vallari-categories__header">
+      <h2 class="vallari-categories__heading">
+        {{ section.settings.heading | escape }}
+      </h2>
+
+      {% if section.settings.link_label != blank %}
+        <a
+          class="vallari-categories__view-all"
+          href="{{ routes.all_products_collection_url }}"
+        >
+          {{ section.settings.link_label | escape }}
+          <span aria-hidden="true">↗</span>
+        </a>
+      {% endif %}
+    </div>
+    {% if section.settings.description != blank %}
+      <p class="vallari-categories__description">
+        {{ section.settings.description | escape }}
+      </p>
+    {% endif %}
+    {% if section.settings.collections != blank %}
+      <ul class="vallari-categories__list" role="list">
+        {% for category in section.settings.collections %}
+          <li class="vallari-categories__item">
+            <a
+              class="vallari-categories__card"
+              href="{{ category.url | escape }}"
+            >
+              <div class="vallari-categories__media">
+                {% if category.featured_image != blank %}
+                  {{
+                    category.featured_image
+                    | image_url: width: 800
+                    | image_tag:
+                      class: 'vallari-categories__image',
+                      widths: '200, 400, 600, 800',
+                      sizes: '(min-width: 640px) 25vw, 50vw',
+                      loading: 'lazy',
+                      alt: ''
+                  }}
+                {% else %}
+                  <div
+                    class="vallari-categories__placeholder"
+                    aria-hidden="true"
+                  >
+                    {{ 'collection-1' | placeholder_svg_tag: 'vallari-categories__image' }}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="vallari-categories__caption">
+                <h3 class="vallari-categories__title">
+                  {{ category.title | escape }}
+                </h3>
+
+                <span aria-hidden="true">↗</span>
+              </div>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% elsif section.settings.show_placeholders %}
+      <ul class="vallari-categories__list" role="list">
+        {% for index in (1..8) %}
+          {% liquid
+            assign placeholder_number = forloop.index0 | modulo: 6 | plus: 1
+            assign placeholder_name = 'collection-' | append: placeholder_number
+          %}
+
+          <li class="vallari-categories__item">
+            <div class="vallari-categories__card">
+              <div class="vallari-categories__media" aria-hidden="true">
+                {{ placeholder_name | placeholder_svg_tag: 'vallari-categories__image' }}
+              </div>
+
+              <div class="vallari-categories__caption">
+                <h3 class="vallari-categories__title">Sample category {{ index }}</h3>
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+
+    {% elsif request.design_mode %}
+      <p class="vallari-categories__empty">Select collections or enable “Show sample categories” to preview cards.</p>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  /* Use our shared container instead of Skeleton's section grid. */
+  .shopify-section.vallari-categories {
+    display: block;
+    background: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  .vallari-categories__inner {
+    --categories-gap: var(--layout-card-gap, 0.75rem);
+
+    box-sizing: border-box;
+    width: 100%;
+    max-width: var(--page-width, 80rem);
+    margin-inline: auto;
+    padding-inline: var(--page-margin, 20px);
+    padding-block: 2rem;
+  }
+
+  .vallari-categories__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .vallari-categories__heading {
+    margin: 0;
+    color: var(--color-accent);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+    font-weight: var(--font-heading--weight, 600);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+  .vallari-categories__description {
+    max-width: 60ch;
+    margin: 0 0 1.5rem;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .vallari-categories__view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    color: var(--color-foreground);
+    font-size: 0.875rem;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+
+  .vallari-categories__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--categories-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Two cards per row on smaller screens. */
+  .vallari-categories__item {
+    flex: 0 0 calc((100% - var(--categories-gap)) / 2);
+    min-width: 0;
+  }
+
+  .vallari-categories__card {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: var(--layout-card-padding, 0.75rem);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 18%, transparent);
+    border-radius: var(--radius-card, 1.5rem);
+    background: color-mix(in srgb, var(--color-foreground) 5%, var(--color-background));
+    color: var(--color-foreground);
+    text-decoration: none;
+    transition: transform var(--motion-duration-fast, 200ms) ease, border-color var(--motion-duration-fast, 200ms) ease;
+  }
+
+  .vallari-categories__media {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: var(--radius-image, 1.25rem);
+    background: var(--color-surface);
+  }
+
+  .vallari-categories__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .vallari-categories__placeholder {
+    height: 100%;
+  }
+
+  .vallari-categories__caption {
+    display: block;
+    padding-top: 0.5rem;
+  }
+
+  .vallari-categories__title {
+    margin: 0;
+    font-family: var(--font-primary--family);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.25rem;
+    overflow-wrap: anywhere;
+  }
+
+  .vallari-categories__caption > span {
+    flex-shrink: 0;
+  }
+
+  .vallari-categories__card:focus-visible,
+  .vallari-categories__view-all:focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 4px;
+  }
+
+  .vallari-categories__empty {
+    margin: 0;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  @media (hover: hover) {
+    .vallari-categories__card:hover {
+      transform: translateY(var(--motion-hover-lift, -2px));
+      border-color: var(--color-accent);
+    }
+  }
+  @media (min-width: 1024px) {
+    .vallari-categories__inner {
+      padding-inline: var(--page-margin-desktop, 32px);
+    }
+  }
+  @media (min-width: 640px) {
+    .vallari-categories__item {
+      flex-basis: calc((100% - 3 * var(--categories-gap)) / 4);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vallari-categories__card {
+      transition: none;
+    }
+
+    .vallari-categories__card:hover {
+      transform: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Vallari categories",
+  "tag": "section",
+  "class": "vallari-categories",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Shop Most Recent"
+    },
+    {
+      "type": "collection_list",
+      "id": "collections",
+      "label": "Featured collections",
+      "limit": 8,
+      "info": "Choose the collections to feature on the homepage."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_placeholders",
+      "label": "Show sample categories",
+      "default": false,
+      "info": "Display sample cards when no collections are selected. Turn off before launch."
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "All products link label",
+      "default": "Explore all products"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Explore the latest décor for weddings, events, and the spaces you call home."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vallari categories"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["index"]
+  }
+}
+{% endschema %}

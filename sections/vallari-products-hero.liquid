@@ -1,0 +1,185 @@
+<section
+  id="VallariProductsHero-{{ section.id }}"
+  class="vallari-products-hero"
+>
+  <div class="vallari-container vallari-products-hero__inner">
+    <div class="vallari-products-hero__content">
+      {% if section.settings.heading != blank %}
+        <h1 class="vallari-products-hero__heading">
+          {{ section.settings.heading | escape }}
+        </h1>
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <div class="vallari-products-hero__description">
+          {{ section.settings.description }}
+        </div>
+      {% endif %}
+
+      {% if section.settings.button_label != blank %}
+        <a
+          class="vallari-products-hero__button"
+          href="{{ section.settings.button_link | default: '#products-grid' }}"
+        >
+          {{ section.settings.button_label | escape }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .vallari-products-hero {
+    width: 100%;
+  }
+
+  .vallari-products-hero__inner {
+    display: flex;
+    align-items: center;
+
+    min-height: clamp(25rem, 40vw, 36rem);
+
+    padding-top: clamp(5rem, 9vw, 8rem);
+    padding-bottom: clamp(5rem, 9vw, 8rem);
+  }
+
+  .vallari-products-hero__content {
+    width: 100%;
+    max-width: 48rem;
+  }
+
+  .vallari-products-hero__heading {
+    max-width: 16ch;
+    margin: 0;
+
+    color: #201a18;
+
+    font-family: var(--font-heading-family);
+    font-size: clamp(2.75rem, 5.5vw, 4.75rem);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+
+    text-wrap: balance;
+  }
+
+  .vallari-products-hero__description {
+    max-width: 38rem;
+
+    margin-top: 1.75rem;
+
+    color: #323232;
+
+    font-family: var(--font-body-family);
+    font-size: clamp(1rem, 1.3vw, 1.125rem);
+    line-height: 1.7;
+  }
+
+  .vallari-products-hero__description p {
+    margin: 0;
+  }
+
+  .vallari-products-hero__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 3.25rem;
+
+    margin-top: 2rem;
+    padding: 0.95rem 1.8rem;
+
+    border-radius: 0.5rem;
+
+    background: #8a4f3c;
+    color: #ffffff;
+
+    font-family: var(--font-body-family);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0.02em;
+
+    text-decoration: none;
+
+    transition: background-color 180ms ease, transform 180ms ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .vallari-products-hero__button:hover {
+      background: #6d3827;
+      transform: translateY(-1px);
+    }
+  }
+
+  .vallari-products-hero__button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .vallari-products-hero__inner {
+      min-height: auto;
+
+      padding-top: 4.5rem;
+      padding-bottom: 4.5rem;
+    }
+
+    .vallari-products-hero__heading {
+      max-width: 13ch;
+      font-size: clamp(2.5rem, 12vw, 3.5rem);
+    }
+
+    .vallari-products-hero__description {
+      margin-top: 1.5rem;
+    }
+
+    .vallari-products-hero__button {
+      margin-top: 1.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vallari-products-hero__button {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Products hero",
+  "tag": "section",
+  "class": "section-products-hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Decor for Every Beautiful Moment"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Discover elegant décor for weddings, events, celebrations, and beautifully styled spaces.</p>"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "VIEW RECENT PRODUCTS"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Products hero"
+    }
+  ]
+}
+{% endschema %}

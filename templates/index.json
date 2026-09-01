@@ -1,0 +1,103 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "vallari_hero_eUK43y": {
+      "type": "vallari-hero",
+      "name": "Vallari hero",
+      "settings": {
+        "eyebrow": "Vallari Decor",
+        "heading": "Making the world a prettier place!",
+        "description": "Décor for weddings, celebrations, and the spaces you call home.",
+        "button_label": "Explore products",
+        "button_link": ""
+      }
+    },
+    "vallari_featured_products_n4R46M": {
+      "type": "vallari-featured-products",
+      "name": "Vallari featured products",
+      "settings": {
+        "heading": "Shop Most Recent",
+        "description": "Explore the latest décor for weddings, events, and the spaces you call home.",
+        "collection": "",
+        "products_to_show": 4,
+        "link_label": "Explore all products",
+        "show_placeholders": true
+      }
+    },
+    "vallari_about_M4LDFx": {
+      "type": "vallari-about",
+      "name": "Vallari about",
+      "settings": {
+        "heading": "About Vallari Decor",
+        "body": "<p>Vallari Decor is a Canadian e-commerce business specializing in décor for weddings, events, homes, and commercial spaces.</p><p>Since 2018, our business has grown primarily through online marketplaces, serving customers across Canada, the United States, and internationally.</p>"
+      }
+    },
+    "vallari_faq_HxEBm9": {
+      "type": "vallari-faq",
+      "blocks": {
+        "question_zbfMeQ": {
+          "type": "question",
+          "settings": {
+            "question": "What kinds of décor do you sell?",
+            "answer": "<p>Vallari Decor specializes in décor for weddings, events, homes, and commercial spaces.</p>"
+          }
+        },
+        "question_zNPL8x": {
+          "type": "question",
+          "settings": {
+            "question": "Where is Vallari Decor based?",
+            "answer": "<p>Vallari Decor is a Canadian business based in Toronto, Ontario.</p>"
+          }
+        },
+        "question_dpjwWa": {
+          "type": "question",
+          "settings": {
+            "question": "How long will delivery take?",
+            "answer": "<p>Demo placeholder: add owner-confirmed processing times and delivery estimates before launch.</p>"
+          }
+        },
+        "question_4xdpXA": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>Demo placeholder: add the owner-approved return policy and a link to the full policy before launch.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "question_zbfMeQ",
+        "question_zNPL8x",
+        "question_dpjwWa",
+        "question_4xdpXA"
+      ],
+      "name": "Vallari FAQ",
+      "settings": {
+        "heading": "Frequently asked questions",
+        "use_page_heading": false
+      }
+    },
+    "vallari_contact_4nbzqK": {
+      "type": "vallari-contact",
+      "name": "Vallari contact",
+      "settings": {
+        "heading": "Get in touch",
+        "description": "Have a question about our décor or an order? Send us a message—we’d love to hear from you."
+      }
+    }
+  },
+  "order": [
+    "vallari_hero_eUK43y",
+    "vallari_featured_products_n4R46M",
+    "vallari_about_M4LDFx",
+    "vallari_faq_HxEBm9",
+    "vallari_contact_4nbzqK"
+  ]
+}

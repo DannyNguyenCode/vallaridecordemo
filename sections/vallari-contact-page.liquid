@@ -1,0 +1,493 @@
+{% liquid
+  assign form_id = 'VallariContactPage-' | append: section.id
+%}
+
+<section
+  class="vallari-contact-page"
+  style="
+    --contact-section-padding-top: {{ section.settings.padding_top }}px;
+    --contact-section-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="vallari-contact-page__hero">
+    {% if section.settings.eyebrow != blank %}
+      <p class="vallari-contact-page__eyebrow">
+        {{ section.settings.eyebrow | escape }}
+      </p>
+    {% endif %}
+
+    {% if section.settings.heading != blank %}
+      <h1 class="vallari-contact-page__hero-heading">
+        {{ section.settings.heading | escape }}
+      </h1>
+    {% endif %}
+
+    {% if section.settings.description != blank %}
+      <div class="vallari-contact-page__hero-description">
+        {{ section.settings.description }}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="vallari-container vallari-contact-page__inner">
+    <div class="vallari-contact-page__info">
+      {% if section.settings.info_heading != blank %}
+        <h2 class="vallari-contact-page__info-heading">
+          {{ section.settings.info_heading | escape }}
+        </h2>
+      {% endif %}
+
+      {% if section.settings.info_text != blank %}
+        <div class="vallari-contact-page__info-text">
+          {{ section.settings.info_text }}
+        </div>
+      {% endif %}
+
+      <div class="vallari-contact-page__details">
+        {% if section.settings.location != blank %}
+          <div class="vallari-contact-page__detail">
+            <svg
+              class="vallari-contact-page__detail-icon"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+            >
+              <path d="M12 21s7-5.7 7-12a7 7 0 1 0-14 0c0 6.3 7 12 7 12Z"/>
+              <circle cx="12" cy="9" r="2.5"/>
+            </svg>
+
+            <span>
+              {{ section.settings.location | escape }}
+            </span>
+          </div>
+        {% endif %}
+
+        {% if section.settings.faq_page != blank %}
+          <div class="vallari-contact-page__detail">
+            <svg
+              class="vallari-contact-page__detail-icon"
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+            >
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M9.8 9a2.25 2.25 0 1 1 3.8 1.65c-.95.85-1.6 1.25-1.6 2.35"/>
+              <path d="M12 17h.01"/>
+            </svg>
+
+            <a href="{{ section.settings.faq_page.url }}">
+              {{ section.settings.faq_link_label | escape }}
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% render 'vallari-contact-form', form_id: form_id, heading: section.settings.form_heading %}
+  </div>
+
+  {% if section.settings.products_link != blank %}
+    <div class="vallari-contact-page__products-link">
+      <a href="{{ section.settings.products_link }}">
+        {{ section.settings.products_link_label | escape }}
+      </a>
+    </div>
+  {% endif %}
+</section>
+
+{% stylesheet %}
+  /* ================================
+   CONTACT PAGE
+   ================================ */
+
+  .shopify-section.section-contact-page {
+    display: block;
+
+    background: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  /* ================================
+   HERO
+   ================================ */
+
+  .vallari-contact-page__hero {
+    box-sizing: border-box;
+
+    width: 100%;
+
+    padding: var(--contact-section-padding-top) var(--page-margin, 20px) clamp(4rem, 8vw, 7rem);
+
+    text-align: center;
+  }
+
+  .vallari-contact-page__eyebrow {
+    margin: 0 0 1.25rem;
+
+    color: var(--color-foreground);
+
+    font-family: Georgia, 'Times New Roman', serif;
+
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .vallari-contact-page__hero-heading {
+    max-width: 56rem;
+
+    margin: 0 auto;
+
+    color: var(--color-accent);
+
+    font-family: Georgia, 'Times New Roman', serif;
+
+    font-size: clamp(2.5rem, 5vw, 4rem);
+
+    font-weight: var(--font-heading--weight, 600);
+
+    line-height: 1.1;
+
+    letter-spacing: -0.02em;
+  }
+
+  .vallari-contact-page__hero-description {
+    max-width: 42rem;
+
+    margin: 1.25rem auto 0;
+
+    color: var(--color-text-muted);
+
+    font-family: Georgia, 'Times New Roman', serif;
+
+    font-size: 1rem;
+
+    line-height: 1.7;
+  }
+
+  .vallari-contact-page__hero-description p {
+    margin: 0;
+  }
+
+  /* ================================
+   MAIN CONTENT
+   ================================ */
+
+  .vallari-contact-page__inner {
+    box-sizing: border-box;
+
+    display: grid;
+
+    grid-template-columns:
+      minmax(0, 2fr)
+      minmax(0, 3fr);
+
+    align-items: start;
+
+    gap: clamp(3rem, 7vw, 6rem);
+
+    width: 100%;
+    max-width: var(--page-width, 80rem);
+
+    margin-inline: auto;
+
+    padding-inline: var(--page-margin, 20px);
+
+    padding-bottom: var(--contact-section-padding-bottom);
+  }
+
+  /* ================================
+   CONTACT INFO
+   ================================ */
+
+  .vallari-contact-page__info {
+    min-width: 0;
+
+    padding-top: 0.5rem;
+  }
+
+  .vallari-contact-page__info-heading {
+    margin: 0;
+
+    color: var(--color-accent);
+
+    font-family: Georgia, 'Times New Roman', serif;
+
+    font-size: clamp(1.75rem, 3vw, 2.25rem);
+
+    font-weight: var(--font-heading--weight, 600);
+
+    line-height: 1.2;
+  }
+
+  .vallari-contact-page__info-text {
+    max-width: 42ch;
+
+    margin-top: 1rem;
+
+    color: var(--color-text-muted);
+
+    font-family: Georgia, 'Times New Roman', serif;
+
+    font-size: 1rem;
+
+    line-height: 1.7;
+  }
+
+  .vallari-contact-page__info-text p {
+    margin: 0;
+  }
+
+  .vallari-contact-page__details {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 1rem;
+
+    margin-top: 2rem;
+  }
+
+  .vallari-contact-page__detail {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 0.75rem;
+
+    color: var(--color-foreground);
+
+    font-family: Georgia, 'Times New Roman', serif;
+
+    font-size: 1rem;
+
+    line-height: 1.6;
+  }
+
+  .vallari-contact-page__detail-icon {
+    flex: 0 0 auto;
+
+    width: 1.25rem;
+    height: 1.25rem;
+
+    margin-top: 0.15rem;
+  }
+
+  .vallari-contact-page__detail a {
+    color: inherit;
+
+    text-decoration: underline;
+
+    text-underline-offset: 0.2em;
+  }
+
+  /* ================================
+   BOTTOM LINK
+   ================================ */
+
+  .vallari-contact-page__products-link {
+    max-width: var(--page-width, 80rem);
+
+    margin: clamp(-2rem, -2vw, -1rem) auto 0;
+
+    padding: 0 var(--page-margin, 20px) clamp(3rem, 6vw, 5rem);
+
+    text-align: center;
+
+    font-family: Georgia, 'Times New Roman', serif;
+
+    font-size: 1rem;
+  }
+
+  .vallari-contact-page__products-link a {
+    color: var(--color-text-muted);
+
+    text-decoration: underline;
+
+    text-underline-offset: 0.2em;
+  }
+
+  /* ================================
+   DESKTOP
+   ================================ */
+
+  @media (min-width: 1024px) {
+    .vallari-contact-page__hero,
+    .vallari-contact-page__inner,
+    .vallari-contact-page__products-link {
+      padding-inline: var(--page-margin-desktop, 32px);
+    }
+  }
+
+  /* ================================
+   MOBILE
+   ================================ */
+
+  @media (max-width: 749px) {
+    .vallari-contact-page__hero {
+      padding-top: clamp(3.5rem, 14vw, 5rem);
+
+      padding-bottom: clamp(3rem, 12vw, 4rem);
+    }
+
+    .vallari-contact-page__inner {
+      grid-template-columns: 1fr;
+
+      gap: 2.5rem;
+    }
+
+    .vallari-contact-page__info {
+      padding-top: 0;
+    }
+
+    .vallari-contact-form__panel {
+      width: 100%;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Contact page",
+  "tag": "section",
+  "class": "section-contact-page",
+  "limit": 1,
+
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "CONTACT VALLARI DECOR"
+    },
+
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Let’s make something beautiful."
+    },
+
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Have a question about a product, an order, or décor for your space? We’d love to hear from you.</p>"
+    },
+
+    {
+      "type": "header",
+      "content": "Contact information"
+    },
+
+    {
+      "type": "text",
+      "id": "info_heading",
+      "label": "Heading",
+      "default": "How can we help?"
+    },
+
+    {
+      "type": "richtext",
+      "id": "info_text",
+      "label": "Text",
+      "default": "<p>We are here to assist with any questions you might have regarding our curated collections, custom orders, or upcoming events.</p>"
+    },
+
+    {
+      "type": "text",
+      "id": "location",
+      "label": "Location",
+      "default": "Based in Toronto, Ontario, Canada."
+    },
+
+    {
+      "type": "page",
+      "id": "faq_page",
+      "label": "FAQ page"
+    },
+
+    {
+      "type": "text",
+      "id": "faq_link_label",
+      "label": "FAQ link label",
+      "default": "Check our FAQ"
+    },
+
+    {
+      "type": "header",
+      "content": "Form"
+    },
+
+    {
+      "type": "text",
+      "id": "form_heading",
+      "label": "Form heading",
+      "default": "Send us a message."
+    },
+
+    {
+      "type": "header",
+      "content": "Bottom link"
+    },
+
+    {
+      "type": "url",
+      "id": "products_link",
+      "label": "Products link"
+    },
+
+    {
+      "type": "text",
+      "id": "products_link_label",
+      "label": "Products link label",
+      "default": "Explore our products"
+    },
+
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 40,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 96
+    },
+
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 40,
+      "max": 160,
+      "step": 8,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 96
+    }
+  ],
+
+  "presets": [
+    {
+      "name": "Contact page"
+    }
+  ]
+}
+{% endschema %}

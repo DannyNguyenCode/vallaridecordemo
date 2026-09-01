@@ -1,0 +1,544 @@
+{% comment %}
+  Vallari collection product grid.
+
+  Reads products directly from the current Shopify collection,
+  renders Shopify storefront filters, and uses the shared
+  Vallari product card.
+{% endcomment %}
+
+<section
+  id="products-grid"
+  class="vallari-collection-products"
+>
+  <div class="vallari-collection-products__container">
+    <div class="vallari-collection-products__header">
+      {% if section.settings.heading != blank %}
+        <h2 class="vallari-collection-products__heading">
+          {{ section.settings.heading | escape }}
+        </h2>
+      {% endif %}
+
+      {% if section.settings.description != blank %}
+        <div class="vallari-collection-products__description">
+          {{ section.settings.description }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="vallari-collection-products__layout">
+      <aside
+        class="vallari-collection-products__sidebar"
+        aria-label="Product filters"
+      >
+        {% render 'vallari-facets', results: collection %}
+      </aside>
+
+      <div class="vallari-collection-products__results">
+        {% paginate collection.products by section.settings.products_per_page %}
+          {% assign sort_by = collection.sort_by | default: collection.default_sort_by %}
+
+          <div class="vallari-collection-products__toolbar">
+            <p class="vallari-collection-products__count">
+              {{ collection.products_count }}
+
+              {% if collection.products_count == 1 %}
+                product
+              {% else %}
+                products
+              {% endif %}
+            </p>
+
+            <form
+              class="vallari-collection-products__sort"
+              method="get"
+            >
+              {% for filter in collection.filters %}
+                {% for value in filter.active_values %}
+                  <input
+                    type="hidden"
+                    name="{{ value.param_name }}"
+                    value="{{ value.value }}"
+                  >
+                {% endfor %}
+
+                {% if filter.type == 'price_range' %}
+                  {% if filter.min_value.value %}
+                    <input
+                      type="hidden"
+                      name="{{ filter.min_value.param_name }}"
+                      value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}"
+                    >
+                  {% endif %}
+
+                  {% if filter.max_value.value %}
+                    <input
+                      type="hidden"
+                      name="{{ filter.max_value.param_name }}"
+                      value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}"
+                    >
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+
+              <label for="VallariSortBy"> Sort by </label>
+
+              <select
+                id="VallariSortBy"
+                name="sort_by"
+                onchange="this.form.submit()"
+              >
+                {% for option in collection.sort_options %}
+                  <option
+                    value="{{ option.value }}"
+                    {% if option.value == sort_by %}
+                      selected
+                    {% endif %}
+                  >
+                    {{ option.name }}
+                  </option>
+                {% endfor %}
+              </select>
+            </form>
+          </div>
+
+          {% if collection.products.size > 0 %}
+            <ul
+              class="vallari-collection-products__grid"
+              role="list"
+            >
+              {% for product in collection.products %}
+                <li class="vallari-collection-products__item">
+                  {% render 'vallari-product-card', product: product %}
+                </li>
+              {% endfor %}
+            </ul>
+
+            {% if paginate.pages > 1 %}
+              <nav
+                class="vallari-pagination"
+                aria-label="Collection pagination"
+              >
+                {% if paginate.previous %}
+                  <a
+                    class="vallari-pagination__previous"
+                    href="{{ paginate.previous.url }}"
+                  >
+                    Previous
+                  </a>
+                {% endif %}
+
+                <div class="vallari-pagination__pages">
+                  {% for part in paginate.parts %}
+                    {% if part.is_link %}
+                      <a
+                        class="vallari-pagination__page"
+                        href="{{ part.url }}"
+                      >
+                        {{ part.title }}
+                      </a>
+
+                    {% else %}
+                      <span
+                        class="vallari-pagination__page{% if part.title == paginate.current_page %} vallari-pagination__page--current{% endif %}"
+                        {% if part.title == paginate.current_page %}
+                          aria-current="page"
+                        {% endif %}
+                      >
+                        {{ part.title }}
+                      </span>
+                    {% endif %}
+                  {% endfor %}
+                </div>
+
+                {% if paginate.next %}
+                  <a
+                    class="vallari-pagination__next"
+                    href="{{ paginate.next.url }}"
+                  >
+                    Next
+                  </a>
+                {% endif %}
+              </nav>
+            {% endif %}
+
+          {% else %}
+            <div class="vallari-collection-products__empty">
+              <p>No products found matching your filters.</p>
+            </div>
+          {% endif %}
+        {% endpaginate %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .vallari-collection-products__container {
+    width: calc(100% - 5rem);
+    max-width: 1500px;
+    margin-inline: auto;
+  }
+  .vallari-collection-products {
+    width: 100%;
+    padding-top: clamp(4rem, 7vw, 6rem);
+    padding-bottom: clamp(4rem, 7vw, 6rem);
+  }
+
+  .vallari-collection-products__header {
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .vallari-collection-products__heading {
+    margin: 0;
+    color: var(--color-foreground);
+    font-family: var(--font-primary--family);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: var(--font-heading--weight);
+    line-height: 1.15;
+  }
+
+  .vallari-collection-products__description {
+    max-width: 42rem;
+    margin-top: 1rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .vallari-collection-products__description p {
+    margin: 0;
+  }
+  @media screen and (max-width: 749px) {
+    .vallari-container.vallari-collection-products__container {
+      width: calc(100% - 2rem);
+    }
+  }
+
+  /* ================================
+       Collection layout
+    ================================= */
+
+  .vallari-collection-products__layout {
+    display: grid;
+    grid-template-columns: minmax(12rem, 14rem) minmax(0, 1fr);
+    gap: clamp(2rem, 3vw, 3rem);
+    align-items: start;
+  }
+
+  .vallari-collection-products__sidebar {
+    min-width: 0;
+    position: sticky;
+    top: 7rem;
+  }
+
+  .vallari-collection-products__results {
+    min-width: 0;
+  }
+
+  /* ================================
+       Results toolbar
+    ================================= */
+
+  .vallari-collection-products__sidebar {
+    position: sticky;
+    top: 7rem;
+  }
+
+  .vallari-facets {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .vallari-facets__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1.25rem;
+  }
+
+  .vallari-facets__title {
+    margin: 0;
+    color: var(--color-foreground);
+    font-family: var(--font-primary--family);
+    font-size: 1.15rem;
+    font-weight: var(--font-heading--weight);
+  }
+
+  .vallari-facets__clear,
+  .vallari-facets__reset {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    text-decoration: underline;
+    text-underline-offset: 0.2rem;
+  }
+
+  .vallari-facets__group {
+    border-top: 1px solid var(--color-surface);
+  }
+
+  .vallari-facets__group:last-of-type {
+    border-bottom: 1px solid var(--color-surface);
+  }
+
+  .vallari-facets__summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.15rem 0;
+    color: var(--color-foreground);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .vallari-facets__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .vallari-facets__chevron {
+    font-size: 1.25rem;
+    font-weight: 300;
+    transition: transform var(--motion-duration-fast) ease;
+  }
+
+  .vallari-facets__group[open] .vallari-facets__chevron {
+    transform: rotate(45deg);
+  }
+
+  .vallari-facets__content {
+    padding: 0 0 1.25rem;
+  }
+
+  .vallari-facets__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .vallari-facets__option {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.65rem;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .vallari-facets__option input {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--color-accent);
+  }
+
+  .vallari-facets__option span {
+    color: var(--color-foreground);
+    font-size: 0.875rem;
+  }
+
+  .vallari-facets__value-count {
+    color: var(--color-text-muted) !important;
+    font-size: 0.75rem !important;
+  }
+
+  .vallari-facets__price {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 0.75rem;
+    align-items: end;
+  }
+
+  .vallari-facets__price-field label {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+  }
+
+  .vallari-facets__price-input {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    border: 1px solid var(--color-surface);
+    border-radius: var(--radius-card);
+    padding: 0.65rem;
+  }
+
+  .vallari-facets__price-input input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: var(--color-foreground);
+    outline: none;
+  }
+
+  .vallari-facets__price-separator {
+    padding-bottom: 0.65rem;
+    color: var(--color-text-muted);
+  }
+
+  .vallari-facets__apply {
+    width: 100%;
+    margin-top: 1rem;
+    padding: 0.9rem 1rem;
+    border: 0;
+    border-radius: var(--radius-card);
+    background: var(--color-accent);
+    color: var(--color-background);
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  @media screen and (max-width: 989px) {
+    .vallari-collection-products__layout {
+      grid-template-columns: 1fr;
+    }
+
+    .vallari-collection-products__sidebar {
+      position: static;
+    }
+  }
+  .vallari-collection-products__toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 3rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--color-surface);
+  }
+
+  .vallari-collection-products__count {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+
+  /* ================================
+       Product grid
+    ================================= */
+
+  .vallari-collection-products__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(1.5rem, 2.5vw, 2.75rem);
+    row-gap: clamp(2.5rem, 4vw, 4rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .vallari-collection-products__item {
+    min-width: 0;
+  }
+
+  /* ================================
+       Pagination
+    ================================= */
+
+  .vallari-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: clamp(3rem, 6vw, 5rem);
+  }
+
+  .vallari-pagination__pages {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .vallari-pagination__page,
+  .vallari-pagination__previous,
+  .vallari-pagination__next {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.5rem;
+    min-height: 2.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-card);
+    color: var(--color-foreground);
+    text-decoration: none;
+  }
+
+  .vallari-pagination__page--current {
+    background: var(--color-accent);
+    color: var(--color-background);
+  }
+
+  .vallari-pagination a:hover {
+    background: var(--color-surface);
+  }
+
+  /* ================================
+       Empty state
+    ================================= */
+
+  .vallari-collection-products__empty {
+    padding: 4rem 0;
+    text-align: center;
+    color: var(--color-text-muted);
+  }
+
+  /* ================================
+       Responsive
+    ================================= */
+
+  @media screen and (min-width: 1100px) {
+    .vallari-collection-products__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media screen and (max-width: 989px) {
+    .vallari-collection-products__layout {
+      grid-template-columns: 1fr;
+    }
+
+    .vallari-collection-products__sidebar {
+      position: static;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .vallari-collection-products__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collection products",
+  "tag": "section",
+  "class": "section-vallari-collection-products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Browse All Products"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Explore our complete collection of décor for weddings, events, celebrations, and beautifully styled spaces.</p>"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    }
+  ]
+}
+{% endschema %}

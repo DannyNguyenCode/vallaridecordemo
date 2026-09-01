@@ -1,0 +1,984 @@
+<section
+  id="VallariAboutPage-{{ section.id }}"
+  class="vallari-about-page"
+>
+  {%- comment -%}
+    SECTION 1 — EDITORIAL HERO
+  {%- endcomment -%}
+  <div class="vallari-about-page__hero">
+    <div class="vallari-about-page__hero-content">
+      {% if section.settings.hero_eyebrow != blank %}
+        <p class="vallari-about-page__eyebrow">
+          {{ section.settings.hero_eyebrow | escape }}
+        </p>
+      {% endif %}
+
+      {% if section.settings.hero_heading != blank %}
+        <h1 class="vallari-about-page__hero-heading">
+          {{ section.settings.hero_heading | escape }}
+        </h1>
+      {% endif %}
+
+      {% if section.settings.hero_body != blank %}
+        <div class="vallari-about-page__hero-body">
+          {{ section.settings.hero_body }}
+        </div>
+      {% endif %}
+
+      {% if section.settings.hero_link_label != blank %}
+        <a
+          class="vallari-about-page__text-link"
+          href="{{ section.settings.hero_link | default: routes.all_products_collection_url }}"
+        >
+          {{ section.settings.hero_link_label | escape }}
+          <span aria-hidden="true">→</span>
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="vallari-about-page__hero-media">
+      {% if section.settings.hero_image != blank %}
+        {{
+          section.settings.hero_image
+          | image_url: width: 1800
+          | image_tag:
+            class: 'vallari-about-page__image',
+            widths: '480, 720, 960, 1200, 1500, 1800',
+            sizes: '(min-width: 990px) 58vw, 100vw',
+            loading: 'eager',
+            fetchpriority: 'high',
+            alt: section.settings.hero_image.alt
+        }}
+      {% else %}
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'vallari-about-page__placeholder' }}
+      {% endif %}
+    </div>
+  </div>
+
+  {%- comment -%}
+    SECTION 2 — BRAND STORY
+  {%- endcomment -%}
+  <div class="vallari-about-page__story">
+    <div class="vallari-about-page__story-heading">
+      {% if section.settings.story_eyebrow != blank %}
+        <p class="vallari-about-page__eyebrow">
+          {{ section.settings.story_eyebrow | escape }}
+        </p>
+      {% endif %}
+
+      {% if section.settings.story_heading != blank %}
+        <h2 class="vallari-about-page__section-heading">
+          {{ section.settings.story_heading | escape }}
+        </h2>
+      {% endif %}
+    </div>
+
+    {% if section.settings.story_body != blank %}
+      <div class="vallari-about-page__story-body">
+        {{ section.settings.story_body }}
+      </div>
+    {% endif %}
+  </div>
+
+  {%- comment -%}
+    SECTION 3 — EDITORIAL IMAGE
+  {%- endcomment -%}
+  <div class="vallari-about-page__editorial">
+    {% if section.settings.editorial_image != blank %}
+      {{
+        section.settings.editorial_image
+        | image_url: width: 2400
+        | image_tag:
+          class: 'vallari-about-page__image',
+          widths: '600, 900, 1200, 1600, 2000, 2400',
+          sizes: '(min-width: 1440px) 1280px, calc(100vw - 40px)',
+          loading: 'lazy',
+          alt: section.settings.editorial_image.alt
+      }}
+    {% else %}
+      {{ 'lifestyle-2' | placeholder_svg_tag: 'vallari-about-page__placeholder' }}
+    {% endif %}
+  </div>
+
+  {%- comment -%}
+    SECTION 4 — OUR APPROACH
+  {%- endcomment -%}
+  <div class="vallari-about-page__approach">
+    {% if section.settings.approach_heading != blank %}
+      <h2 class="vallari-about-page__approach-heading">
+        {{ section.settings.approach_heading | escape }}
+      </h2>
+    {% endif %}
+
+    <div class="vallari-about-page__principles">
+      <div class="vallari-about-page__principle">
+        {% if section.settings.principle_one_heading != blank %}
+          <h3>{{ section.settings.principle_one_heading | escape }}</h3>
+        {% endif %}
+
+        {% if section.settings.principle_one_body != blank %}
+          <p>{{ section.settings.principle_one_body | escape }}</p>
+        {% endif %}
+      </div>
+
+      <div class="vallari-about-page__principle">
+        {% if section.settings.principle_two_heading != blank %}
+          <h3>{{ section.settings.principle_two_heading | escape }}</h3>
+        {% endif %}
+
+        {% if section.settings.principle_two_body != blank %}
+          <p>{{ section.settings.principle_two_body | escape }}</p>
+        {% endif %}
+      </div>
+
+      <div class="vallari-about-page__principle">
+        {% if section.settings.principle_three_heading != blank %}
+          <h3>{{ section.settings.principle_three_heading | escape }}</h3>
+        {% endif %}
+
+        {% if section.settings.principle_three_body != blank %}
+          <p>{{ section.settings.principle_three_body | escape }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%}
+    SECTION 5 — HOME + EVENTS
+  {%- endcomment -%}
+  <div class="vallari-about-page__collections">
+    <article class="vallari-about-page__collection-card">
+      <a
+        class="vallari-about-page__collection-media"
+        href="{{ section.settings.home_link | default: routes.all_products_collection_url }}"
+        aria-label="{{ section.settings.home_link_label | default: section.settings.home_heading | escape }}"
+      >
+        {% if section.settings.home_image != blank %}
+          {{
+            section.settings.home_image
+            | image_url: width: 1400
+            | image_tag:
+              class: 'vallari-about-page__collection-image',
+              widths: '400, 600, 800, 1000, 1200, 1400',
+              sizes: '(min-width: 750px) 50vw, 100vw',
+              loading: 'lazy',
+              alt: section.settings.home_image.alt
+          }}
+        {% else %}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'vallari-about-page__placeholder' }}
+        {% endif %}
+      </a>
+
+      <div class="vallari-about-page__collection-content">
+        {% if section.settings.home_eyebrow != blank %}
+          <p class="vallari-about-page__eyebrow">
+            {{ section.settings.home_eyebrow | escape }}
+          </p>
+        {% endif %}
+
+        {% if section.settings.home_heading != blank %}
+          <h3>{{ section.settings.home_heading | escape }}</h3>
+        {% endif %}
+
+        {% if section.settings.home_body != blank %}
+          <p class="vallari-about-page__collection-body">
+            {{ section.settings.home_body | escape }}
+          </p>
+        {% endif %}
+
+        {% if section.settings.home_link_label != blank %}
+          <a
+            class="vallari-about-page__text-link"
+            href="{{ section.settings.home_link | default: routes.all_products_collection_url }}"
+          >
+            {{ section.settings.home_link_label | escape }}
+            <span aria-hidden="true">→</span>
+          </a>
+        {% endif %}
+      </div>
+    </article>
+
+    <article class="vallari-about-page__collection-card">
+      <a
+        class="vallari-about-page__collection-media"
+        href="{{ section.settings.event_link | default: routes.all_products_collection_url }}"
+        aria-label="{{ section.settings.event_link_label | default: section.settings.event_heading | escape }}"
+      >
+        {% if section.settings.event_image != blank %}
+          {{
+            section.settings.event_image
+            | image_url: width: 1400
+            | image_tag:
+              class: 'vallari-about-page__collection-image',
+              widths: '400, 600, 800, 1000, 1200, 1400',
+              sizes: '(min-width: 750px) 50vw, 100vw',
+              loading: 'lazy',
+              alt: section.settings.event_image.alt
+          }}
+        {% else %}
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'vallari-about-page__placeholder' }}
+        {% endif %}
+      </a>
+
+      <div class="vallari-about-page__collection-content">
+        {% if section.settings.event_eyebrow != blank %}
+          <p class="vallari-about-page__eyebrow">
+            {{ section.settings.event_eyebrow | escape }}
+          </p>
+        {% endif %}
+
+        {% if section.settings.event_heading != blank %}
+          <h3>{{ section.settings.event_heading | escape }}</h3>
+        {% endif %}
+
+        {% if section.settings.event_body != blank %}
+          <p class="vallari-about-page__collection-body">
+            {{ section.settings.event_body | escape }}
+          </p>
+        {% endif %}
+
+        {% if section.settings.event_link_label != blank %}
+          <a
+            class="vallari-about-page__text-link"
+            href="{{ section.settings.event_link | default: routes.all_products_collection_url }}"
+          >
+            {{ section.settings.event_link_label | escape }}
+            <span aria-hidden="true">→</span>
+          </a>
+        {% endif %}
+      </div>
+    </article>
+  </div>
+
+  {%- comment -%}
+    SECTION 6 — CLOSING CTA
+  {%- endcomment -%}
+  <div class="vallari-about-page__cta">
+    {% if section.settings.cta_eyebrow != blank %}
+      <p class="vallari-about-page__eyebrow">
+        {{ section.settings.cta_eyebrow | escape }}
+      </p>
+    {% endif %}
+
+    {% if section.settings.cta_heading != blank %}
+      <h2>{{ section.settings.cta_heading | escape }}</h2>
+    {% endif %}
+
+    {% if section.settings.cta_body != blank %}
+      <p class="vallari-about-page__cta-body">
+        {{ section.settings.cta_body | escape }}
+      </p>
+    {% endif %}
+
+    {% if section.settings.cta_link_label != blank %}
+      <a
+        class="vallari-about-page__button"
+        href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}"
+      >
+        {{ section.settings.cta_link_label | escape }}
+        <span aria-hidden="true">→</span>
+      </a>
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .vallari-about-page {
+    --vallari-about-bg: #fff8f6;
+    --vallari-about-surface: #fef1ed;
+    --vallari-about-surface-strong: #f2e5e2;
+    --vallari-about-primary: #8a4f3c;
+    --vallari-about-primary-hover: #6d3827;
+    --vallari-about-text: #201a18;
+    --vallari-about-body: #53433f;
+    --vallari-about-border: #d8c2bc;
+
+    width: 100%;
+    overflow: hidden;
+    background: var(--vallari-about-bg);
+    color: var(--vallari-about-text);
+  }
+
+  .vallari-about-page__hero,
+  .vallari-about-page__story,
+  .vallari-about-page__editorial,
+  .vallari-about-page__collections {
+    box-sizing: border-box;
+    width: min(100%, 1440px);
+    margin-inline: auto;
+    padding-inline: clamp(20px, 5.5vw, 80px);
+  }
+
+  .vallari-about-page__hero {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(32px, 5vw, 72px);
+    align-items: center;
+    padding-block: clamp(64px, 8vw, 120px);
+  }
+
+  .vallari-about-page__hero-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    max-width: 580px;
+  }
+
+  .vallari-about-page__eyebrow {
+    margin: 0 0 20px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--vallari-about-body);
+  }
+
+  .vallari-about-page__hero-heading {
+    margin: 0;
+    font-family: 'Libre Caslon Text', serif;
+    font-size: clamp(42px, 5vw, 68px);
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    font-weight: 400;
+    color: var(--vallari-about-primary);
+  }
+
+  .vallari-about-page__hero-body {
+    margin-top: 28px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(16px, 1.3vw, 18px);
+    line-height: 1.75;
+    color: var(--vallari-about-body);
+  }
+
+  .vallari-about-page__hero-body p {
+    margin: 0;
+  }
+
+  .vallari-about-page__hero-body p + p {
+    margin-top: 16px;
+  }
+
+  .vallari-about-page__text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 32px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid currentColor;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--vallari-about-primary);
+    text-decoration: none;
+    transition: color 0.2s ease, gap 0.2s ease;
+  }
+
+  .vallari-about-page__text-link:hover {
+    gap: 14px;
+    color: var(--vallari-about-primary-hover);
+  }
+
+  .vallari-about-page__hero-media {
+    width: 100%;
+    height: clamp(560px, 75vh, 820px);
+    overflow: hidden;
+    border-radius: 10px;
+    background: var(--vallari-about-surface);
+  }
+
+  .vallari-about-page__image,
+  .vallari-about-page__collection-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .vallari-about-page__placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--vallari-about-surface);
+    color: var(--vallari-about-border);
+  }
+
+  .vallari-about-page__story {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(48px, 8vw, 120px);
+    padding-block: clamp(72px, 9vw, 120px);
+    border-top: 1px solid var(--vallari-about-border);
+  }
+
+  .vallari-about-page__story-heading {
+    max-width: 500px;
+  }
+
+  .vallari-about-page__section-heading {
+    margin: 0;
+    font-family: 'Libre Caslon Text', serif;
+    font-size: clamp(30px, 3vw, 42px);
+    line-height: 1.3;
+    font-weight: 400;
+    color: var(--vallari-about-primary);
+  }
+
+  .vallari-about-page__story-body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(16px, 1.3vw, 18px);
+    line-height: 1.75;
+    color: var(--vallari-about-body);
+  }
+
+  .vallari-about-page__story-body p {
+    margin: 0;
+  }
+
+  .vallari-about-page__story-body p + p {
+    margin-top: 22px;
+  }
+
+  .vallari-about-page__editorial {
+    height: clamp(420px, 65vw, 760px);
+    padding-bottom: clamp(72px, 9vw, 120px);
+  }
+
+  .vallari-about-page__editorial .vallari-about-page__image,
+  .vallari-about-page__editorial .vallari-about-page__placeholder {
+    border-radius: 10px;
+  }
+
+  .vallari-about-page__approach {
+    box-sizing: border-box;
+    width: 100%;
+    padding: clamp(72px, 9vw, 120px) clamp(20px, 5.5vw, 80px);
+    background: var(--vallari-about-surface);
+  }
+
+  .vallari-about-page__approach-heading {
+    max-width: 900px;
+    margin: 0 auto clamp(56px, 7vw, 88px);
+    font-family: 'Libre Caslon Text', serif;
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-weight: 400;
+    text-align: center;
+    color: var(--vallari-about-primary);
+  }
+
+  .vallari-about-page__principles {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: min(100%, 1280px);
+    margin-inline: auto;
+  }
+
+  .vallari-about-page__principle {
+    padding-inline: clamp(28px, 4vw, 56px);
+    text-align: center;
+  }
+
+  .vallari-about-page__principle + .vallari-about-page__principle {
+    border-left: 1px solid var(--vallari-about-border);
+  }
+
+  .vallari-about-page__principle h3 {
+    margin: 0 0 24px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+    line-height: 1.3;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--vallari-about-primary);
+  }
+
+  .vallari-about-page__principle p {
+    max-width: 360px;
+    margin: 0 auto;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--vallari-about-body);
+  }
+
+  .vallari-about-page__collections {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(24px, 3vw, 40px);
+    padding-block: clamp(72px, 9vw, 120px);
+  }
+
+  .vallari-about-page__collection-card {
+    min-width: 0;
+  }
+
+  .vallari-about-page__collection-media {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 10px;
+    background: var(--vallari-about-surface);
+  }
+
+  .vallari-about-page__collection-image {
+    transition: transform 0.7s ease;
+  }
+
+  .vallari-about-page__collection-media:hover .vallari-about-page__collection-image {
+    transform: scale(1.035);
+  }
+
+  .vallari-about-page__collection-content {
+    padding-top: 30px;
+  }
+
+  .vallari-about-page__collection-content .vallari-about-page__eyebrow {
+    margin-bottom: 14px;
+  }
+
+  .vallari-about-page__collection-content h3 {
+    margin: 0;
+    font-family: 'Libre Caslon Text', serif;
+    font-size: clamp(25px, 2.2vw, 34px);
+    line-height: 1.3;
+    font-weight: 400;
+    color: var(--vallari-about-primary);
+  }
+
+  .vallari-about-page__collection-body {
+    max-width: 540px;
+    margin: 16px 0 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--vallari-about-body);
+  }
+
+  .vallari-about-page__collection-content .vallari-about-page__text-link {
+    margin-top: 22px;
+  }
+
+  .vallari-about-page__cta {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(calc(100% - 40px), 1440px);
+    margin-inline: auto;
+    margin-bottom: clamp(48px, 6vw, 80px);
+    padding: clamp(72px, 9vw, 120px) clamp(20px, 6vw, 90px);
+    border-radius: 18px;
+    background: var(--vallari-about-surface-strong);
+    text-align: center;
+  }
+
+  .vallari-about-page__cta h2 {
+    max-width: 900px;
+    margin: 0;
+    font-family: 'Libre Caslon Text', serif;
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    font-weight: 400;
+    color: var(--vallari-about-primary);
+  }
+
+  .vallari-about-page__cta-body {
+    max-width: 670px;
+    margin: 26px auto 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: clamp(16px, 1.3vw, 18px);
+    line-height: 1.7;
+    color: var(--vallari-about-body);
+  }
+
+  .vallari-about-page__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 38px;
+    min-height: 52px;
+    padding: 0 30px;
+    border-radius: 6px;
+    background: var(--vallari-about-primary);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: #ffffff;
+    text-decoration: none;
+    transition: background 0.2s ease, gap 0.2s ease;
+  }
+
+  .vallari-about-page__button:hover {
+    gap: 14px;
+    background: var(--vallari-about-primary-hover);
+  }
+
+  @media screen and (max-width: 989px) {
+    .vallari-about-page__hero {
+      grid-template-columns: 1fr;
+      padding-top: 40px;
+    }
+
+    .vallari-about-page__hero-media {
+      grid-row: 1;
+      height: min(70vh, 680px);
+    }
+
+    .vallari-about-page__hero-content {
+      grid-row: 2;
+      padding-top: 16px;
+    }
+
+    .vallari-about-page__story {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .vallari-about-page__principles {
+      grid-template-columns: 1fr;
+    }
+
+    .vallari-about-page__principle {
+      padding: 40px 0;
+    }
+
+    .vallari-about-page__principle:first-child {
+      padding-top: 0;
+    }
+
+    .vallari-about-page__principle:last-child {
+      padding-bottom: 0;
+    }
+
+    .vallari-about-page__principle + .vallari-about-page__principle {
+      border-top: 1px solid var(--vallari-about-border);
+      border-left: 0;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .vallari-about-page__hero,
+    .vallari-about-page__story,
+    .vallari-about-page__editorial,
+    .vallari-about-page__collections {
+      padding-inline: 20px;
+    }
+
+    .vallari-about-page__hero {
+      gap: 36px;
+      padding-block: 32px 72px;
+    }
+
+    .vallari-about-page__hero-media {
+      height: 60vh;
+      min-height: 430px;
+      max-height: 620px;
+      border-radius: 8px;
+    }
+
+    .vallari-about-page__hero-heading {
+      font-size: clamp(40px, 12vw, 52px);
+    }
+
+    .vallari-about-page__story {
+      padding-block: 72px;
+    }
+
+    .vallari-about-page__editorial {
+      height: 58vh;
+      min-height: 380px;
+      max-height: 600px;
+      padding-bottom: 72px;
+    }
+
+    .vallari-about-page__approach {
+      padding: 72px 20px;
+    }
+
+    .vallari-about-page__collections {
+      grid-template-columns: 1fr;
+      gap: 64px;
+      padding-block: 72px;
+    }
+
+    .vallari-about-page__collection-media {
+      aspect-ratio: 3 / 4;
+    }
+
+    .vallari-about-page__cta {
+      width: calc(100% - 24px);
+      padding: 72px 20px;
+      border-radius: 14px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vallari-about-page__collection-image,
+    .vallari-about-page__text-link,
+    .vallari-about-page__button {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Vallari about page",
+  "tag": "section",
+  "class": "vallari-about-page-section",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Editorial hero"
+    },
+    {
+      "type": "text",
+      "id": "hero_eyebrow",
+      "label": "Eyebrow",
+      "default": "OUR STORY"
+    },
+    {
+      "type": "text",
+      "id": "hero_heading",
+      "label": "Heading",
+      "default": "Details that turn spaces into moments."
+    },
+    {
+      "type": "richtext",
+      "id": "hero_body",
+      "label": "Text",
+      "default": "<p>At Vallari Decor, we believe the smallest details can completely transform a space. From subtle lighting to elegant centerpieces, we curate collections that bring warmth, character, and sophistication to your home and life's most important celebrations.</p>"
+    },
+    {
+      "type": "text",
+      "id": "hero_link_label",
+      "label": "Link label",
+      "default": "DISCOVER VALLARI"
+    },
+    {
+      "type": "url",
+      "id": "hero_link",
+      "label": "Link"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image"
+    },
+
+    {
+      "type": "header",
+      "content": "Brand story"
+    },
+    {
+      "type": "text",
+      "id": "story_eyebrow",
+      "label": "Eyebrow",
+      "default": "VALLARI DECOR"
+    },
+    {
+      "type": "text",
+      "id": "story_heading",
+      "label": "Heading",
+      "default": "Décor should do more than fill a space. It should give it character."
+    },
+    {
+      "type": "richtext",
+      "id": "story_body",
+      "label": "Story",
+      "default": "<p>We source and curate pieces that are inherently versatile—designed to elevate a quiet corner of your living room or anchor the visual landscape of a grand event.</p><p>Our philosophy is rooted in intentionality. We don't believe in fleeting trends, but rather in timeless aesthetics that adapt to your evolving style. Every vase, candleholder, and accent is chosen for its quality, texture, and ability to evoke a sense of quiet luxury.</p><p>Whether you are styling a mantle for the season or planning the tablescape of a lifetime, our collections are here to help you create environments that feel deeply personal and profoundly beautiful.</p>"
+    },
+
+    {
+      "type": "header",
+      "content": "Editorial image"
+    },
+    {
+      "type": "image_picker",
+      "id": "editorial_image",
+      "label": "Editorial image"
+    },
+
+    {
+      "type": "header",
+      "content": "Our approach"
+    },
+    {
+      "type": "text",
+      "id": "approach_heading",
+      "label": "Heading",
+      "default": "Designed around the details."
+    },
+    {
+      "type": "text",
+      "id": "principle_one_heading",
+      "label": "Principle 1 heading",
+      "default": "CURATED WITH INTENTION"
+    },
+    {
+      "type": "textarea",
+      "id": "principle_one_body",
+      "label": "Principle 1 text",
+      "default": "Every item in our collection is hand-selected to ensure it meets our standards for quality, aesthetic longevity, and emotional resonance."
+    },
+    {
+      "type": "text",
+      "id": "principle_two_heading",
+      "label": "Principle 2 heading",
+      "default": "MADE FOR MOMENTS"
+    },
+    {
+      "type": "textarea",
+      "id": "principle_two_body",
+      "label": "Principle 2 text",
+      "default": "From quiet mornings at home to grand celebrations, our pieces are designed to be the backdrop to your most cherished memories."
+    },
+    {
+      "type": "text",
+      "id": "principle_three_heading",
+      "label": "Principle 3 heading",
+      "default": "STYLE WITHOUT LIMITS"
+    },
+    {
+      "type": "textarea",
+      "id": "principle_three_body",
+      "label": "Principle 3 text",
+      "default": "We prioritize versatility. Our décor seamlessly transitions from a chic wedding reception to everyday elegance in your dining room."
+    },
+
+    {
+      "type": "header",
+      "content": "For the home"
+    },
+    {
+      "type": "image_picker",
+      "id": "home_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "home_eyebrow",
+      "label": "Eyebrow",
+      "default": "FOR THE HOME"
+    },
+    {
+      "type": "text",
+      "id": "home_heading",
+      "label": "Heading",
+      "default": "Make everyday spaces feel considered."
+    },
+    {
+      "type": "textarea",
+      "id": "home_body",
+      "label": "Text",
+      "default": "Bring texture, character, and a thoughtful finishing touch to the spaces you live in."
+    },
+    {
+      "type": "text",
+      "id": "home_link_label",
+      "label": "Link label",
+      "default": "EXPLORE HOME DÉCOR"
+    },
+    {
+      "type": "url",
+      "id": "home_link",
+      "label": "Link"
+    },
+
+    {
+      "type": "header",
+      "content": "For the moment"
+    },
+    {
+      "type": "image_picker",
+      "id": "event_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "event_eyebrow",
+      "label": "Eyebrow",
+      "default": "FOR THE MOMENT"
+    },
+    {
+      "type": "text",
+      "id": "event_heading",
+      "label": "Heading",
+      "default": "Create something unforgettable."
+    },
+    {
+      "type": "textarea",
+      "id": "event_body",
+      "label": "Text",
+      "default": "Transform weddings and celebrations through colour, texture, height, and beautifully chosen details."
+    },
+    {
+      "type": "text",
+      "id": "event_link_label",
+      "label": "Link label",
+      "default": "EXPLORE EVENT DÉCOR"
+    },
+    {
+      "type": "url",
+      "id": "event_link",
+      "label": "Link"
+    },
+
+    {
+      "type": "header",
+      "content": "Closing call to action"
+    },
+    {
+      "type": "text",
+      "id": "cta_eyebrow",
+      "label": "Eyebrow",
+      "default": "CREATE YOUR SPACE"
+    },
+    {
+      "type": "text",
+      "id": "cta_heading",
+      "label": "Heading",
+      "default": "Whatever you're creating, make the details unforgettable."
+    },
+    {
+      "type": "textarea",
+      "id": "cta_body",
+      "label": "Text",
+      "default": "Explore our collections of carefully curated vases, candleholders, and accents to find the perfect pieces for your next project, event, or quiet evening at home."
+    },
+    {
+      "type": "text",
+      "id": "cta_link_label",
+      "label": "Button label",
+      "default": "EXPLORE OUR COLLECTIONS"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vallari about page"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["page"]
+  }
+}
+{% endschema %}

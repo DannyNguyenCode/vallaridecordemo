@@ -1,0 +1,219 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Skeleton",
+    "theme_version": "0.1.0",
+    "theme_author": "Shopify",
+    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
+    "theme_support_url": "https://support.shopify.com/"
+  },
+  {
+    "name": "t:general.typography",
+    "settings": [
+      {
+        "type": "header",
+        "content": "t:general.fonts"
+      },
+      {
+        "type": "font_picker",
+        "id": "type_primary_font",
+        "default": "work_sans_n4",
+        "label": "t:general.primary"
+      }
+    ]
+  },
+  {
+    "name": "t:general.layout",
+    "settings": [
+      {
+        "type": "select",
+        "id": "max_page_width",
+        "label": "Page width",
+        "options": [
+          {
+            "value": "80rem",
+            "label": "Standard — 1280px"
+          },
+          {
+            "value": "90rem",
+            "label": "Wide — 1440px"
+          },
+          {
+            "value": "110rem",
+            "label": "Extra wide — 1760px"
+          }
+        ],
+        "default": "80rem"
+      },
+      {
+        "type": "range",
+        "id": "min_page_margin",
+        "min": 10,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Mobile side spacing",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "desktop_page_margin",
+        "min": 10,
+        "max": 100,
+        "step": 1,
+        "unit": "px",
+        "label": "Desktop side spacing",
+        "default": 32
+      },
+      {
+        "type": "header",
+        "content": "Rounded corners"
+      },
+      {
+        "type": "range",
+        "id": "image_corner_radius",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Images",
+        "default": 20
+      },
+      {
+        "type": "range",
+        "id": "card_corner_radius",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Cards",
+        "default": 24
+      },
+      {
+        "type": "range",
+        "id": "media_frame_corner_radius",
+        "min": 0,
+        "max": 40,
+        "step": 2,
+        "unit": "px",
+        "label": "Large image frames",
+        "default": 28
+      }
+    ]
+  },
+  {
+    "name": "t:general.colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Backgrounds and text"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "default": "#FBF5EA",
+        "label": "t:labels.background"
+      },
+      {
+        "type": "color",
+        "id": "foreground_color",
+        "default": "#33271D",
+        "label": "t:labels.foreground"
+      },
+      {
+        "type": "color",
+        "id": "surface_color",
+        "default": "#F1E4CF",
+        "label": "Surface background",
+        "info": "Used for alternate sections and supporting panels."
+      },
+      {
+        "type": "color",
+        "id": "muted_text_color",
+        "default": "#6E5B4B",
+        "label": "Secondary text",
+        "info": "Used for descriptions and supporting information."
+      },
+      {
+        "type": "header",
+        "content": "Primary buttons"
+      },
+      {
+        "type": "color",
+        "id": "button_background_color",
+        "default": "#9E4E28",
+        "label": "Button background"
+      },
+      {
+        "type": "color",
+        "id": "button_text_color",
+        "default": "#FBF5EA",
+        "label": "Button text",
+        "info": "Choose a colour readable against both button backgrounds."
+      },
+      {
+        "type": "color",
+        "id": "button_hover_background_color",
+        "default": "#33271D",
+        "label": "Button hover background"
+      },
+      {
+        "type": "header",
+        "content": "Decorative accents"
+      },
+      {
+        "type": "color",
+        "id": "accent_color",
+        "default": "#C46A3C",
+        "label": "Brand accent",
+        "info": "Used for decorative details. Check contrast before using for text."
+      },
+      {
+        "type": "color",
+        "id": "accent_background_color",
+        "default": "#EBC2AA",
+        "label": "Accent background",
+        "info": "Used for softly highlighted sections and panels."
+      },
+      {
+        "type": "color",
+        "id": "highlight_color",
+        "default": "#E7A64C",
+        "label": "Highlight",
+        "info": "Used sparingly for decorative emphasis."
+      },
+      {
+        "type": "header",
+        "content": "Main content colors"
+      },
+      {
+        "type": "color",
+        "id": "main_background_color",
+        "label": "Main background",
+        "default": "#323232"
+      },
+      {
+        "type": "color",
+        "id": "main_text_color",
+        "label": "Main text",
+        "default": "#FAF8F5"
+      },
+      {
+        "type": "color",
+        "id": "main_accent_color",
+        "label": "Main accent",
+        "default": "#C5806B"
+      },
+      {
+        "type": "range",
+        "id": "input_corner_radius",
+        "min": 0,
+        "max": 10,
+        "step": 1,
+        "unit": "px",
+        "label": "t:labels.input_corner_radius",
+        "default": 4
+      }
+    ]
+  }
+]

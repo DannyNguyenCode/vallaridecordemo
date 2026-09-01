@@ -1,0 +1,1250 @@
+{% liquid
+  assign selected_variant = product.selected_or_first_available_variant
+  assign product_form_id = 'VallariProductForm-' | append: section.id
+
+  assign current_collection = collection
+
+  if current_collection == blank
+    for product_collection in product.collections
+      unless product_collection.handle == 'all' or product_collection.handle == 'frontpage'
+        assign current_collection = product_collection
+        break
+      endunless
+    endfor
+  endif
+%}
+
+<section
+  id="VallariMainProduct-{{ section.id }}"
+  class="vallari-product-page"
+  data-section-id="{{ section.id }}"
+  data-currency="{{ cart.currency.iso_code | default: shop.currency }}"
+>
+  <div class="vallari-product-page__container">
+    {% comment %}
+      back to products
+    {% endcomment %}
+    <a
+      href="{{ current_collection.url | default: routes.all_products_collection_url }}"
+      class="vallari-product-back"
+    >
+      ← Back to Products
+    </a>
+
+    <div class="vallari-product-layout">
+      {% comment %}
+        LEFT — PRODUCT MEDIA
+      {% endcomment %}
+      <div class="vallari-product-gallery">
+        <div class="vallari-product-gallery__main">
+          {% if product.media.size > 0 %}
+            {% for media in product.media %}
+              <div
+                class="
+                  vallari-product-gallery__media
+                  {% unless media.id == selected_variant.featured_media.id or selected_variant.featured_media == blank and forloop.first %}
+                    vallari-product-gallery__media--hidden
+                  {% endunless %}
+                "
+                data-product-media="{{ media.id }}"
+              >
+                {% case media.media_type %}
+                  {% when 'image' %}
+                    {{
+                      media
+                      | image_url: width: 1800
+                      | image_tag:
+                        loading: 'eager',
+                        widths: '600, 900, 1200, 1500, 1800',
+                        sizes: '(min-width: 990px) 60vw, 100vw',
+                        class: 'vallari-product-gallery__image',
+                        alt: media.alt
+                    }}
+
+                  {% when 'video' %}
+                    {{
+                      media
+                      | media_tag: image_size: '1200x', controls: true, class: 'vallari-product-gallery__video'
+                    }}
+
+                  {% when 'external_video' %}
+                    {{ media | external_video_tag: class: 'vallari-product-gallery__video' }}
+
+                  {% when 'model' %}
+                    {{ media | media_tag: image_size: '1200x', toggleable: true }}
+                {% endcase %}
+              </div>
+            {% endfor %}
+
+          {% else %}
+            <div class="vallari-product-gallery__placeholder">
+              {{ 'product-1' | placeholder_svg_tag }}
+            </div>
+          {% endif %}
+        </div>
+
+        {% if product.media.size > 1 %}
+          <div class="vallari-product-thumbnails">
+            {% for media in product.media %}
+              <button
+                type="button"
+                class="
+                  vallari-product-thumbnail
+                  {% if media.id == selected_variant.featured_media.id %}
+                    vallari-product-thumbnail--active
+                  {% elsif selected_variant.featured_media == blank and forloop.first %}
+                    vallari-product-thumbnail--active
+                  {% endif %}
+                "
+                data-media-target="{{ media.id }}"
+                aria-label="View image {{ forloop.index }}"
+              >
+                {{
+                  media.preview_image
+                  | image_url: width: 240
+                  | image_tag: loading: 'lazy', class: 'vallari-product-thumbnail__image', alt: media.alt
+                }}
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      {% comment %}
+        RIGHT — PRODUCT INFO
+      {% endcomment %}
+      <div class="vallari-product-info">
+        {% if product.type != blank %}
+          <div class="vallari-product-info__eyebrow">
+            {% if current_collection != blank %}
+              {{ current_collection.title }} /
+            {% endif %}
+
+            {{ product.type }}
+          </div>
+        {% elsif current_collection != blank %}
+          <div class="vallari-product-info__eyebrow">
+            {{ current_collection.title }}
+          </div>
+        {% endif %}
+
+        <h1 class="vallari-product-info__title">
+          {{ product.title }}
+        </h1>
+
+        {% if section.settings.show_reviews_placeholder %}
+          <div class="vallari-product-reviews">
+            <div
+              class="vallari-product-reviews__stars"
+              aria-hidden="true"
+            >
+              ★★★★★
+            </div>
+
+            <span>
+              {{ section.settings.review_text }}
+            </span>
+          </div>
+        {% endif %}
+
+        <div
+          class="vallari-product-price"
+          data-product-price
+        >
+          {% if selected_variant.compare_at_price > selected_variant.price %}
+            <span class="vallari-product-price__compare">
+              {{ selected_variant.compare_at_price | money }}
+            </span>
+          {% endif %}
+
+          <span class="vallari-product-price__current">
+            {{ selected_variant.price | money }}
+          </span>
+        </div>
+
+        {% if product.description != blank %}
+          <div class="vallari-product-description">
+            {{ product.description }}
+          </div>
+        {% endif %}
+
+        {% form 'product', product, id: product_form_id, class: 'vallari-product-form' %}
+          <input
+            type="hidden"
+            name="id"
+            value="{{ selected_variant.id }}"
+            data-variant-id
+          >
+
+          {% unless product.has_only_default_variant %}
+            <div class="vallari-product-options">
+              {% for option in product.options_with_values %}
+                <fieldset
+                  class="vallari-product-option"
+                  data-option-position="{{ option.position }}"
+                >
+                  <div class="vallari-product-option__header">
+                    <legend class="vallari-product-option__name">
+                      {{ option.name }}
+                    </legend>
+
+                    <span
+                      class="vallari-product-option__selected"
+                      data-selected-option="{{ option.position }}"
+                    >
+                      {{ option.selected_value }}
+                    </span>
+                  </div>
+
+                  {% assign option_name_downcase = option.name | downcase %}
+
+                  {% if option_name_downcase contains 'color' or option_name_downcase contains 'colour' %}
+                    <div class="vallari-product-colors">
+                      {% for value in option.values %}
+                        <button
+                          type="button"
+                          class="
+                            vallari-product-color
+                            {% if option.selected_value == value %}
+                              vallari-product-color--selected
+                            {% endif %}
+                          "
+                          data-option-value="{{ value | escape }}"
+                          data-option-position="{{ option.position }}"
+                          aria-label="Select {{ value }}"
+                        >
+                          <span
+                            class="vallari-product-color__swatch"
+                            style="--swatch-color: {{ value | handleize }};"
+                          >
+                            <span class="vallari-product-color__check"> ✓ </span>
+                          </span>
+
+                          <span class="vallari-product-color__label">
+                            {{ value }}
+                          </span>
+                        </button>
+                      {% endfor %}
+                    </div>
+
+                  {% else %}
+                    <div class="vallari-product-option-buttons">
+                      {% for value in option.values %}
+                        <button
+                          type="button"
+                          class="
+                            vallari-product-option-button
+                            {% if option.selected_value == value %}
+                              vallari-product-option-button--selected
+                            {% endif %}
+                          "
+                          data-option-value="{{ value | escape }}"
+                          data-option-position="{{ option.position }}"
+                        >
+                          {{ value }}
+                        </button>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </fieldset>
+              {% endfor %}
+            </div>
+          {% endunless %}
+
+          <div class="vallari-product-purchase">
+            <div class="vallari-product-purchase__row">
+              <div class="vallari-product-quantity">
+                <button
+                  type="button"
+                  class="vallari-product-quantity__button"
+                  data-quantity-minus
+                  aria-label="Decrease quantity"
+                >
+                  −
+                </button>
+
+                <input
+                  type="number"
+                  name="quantity"
+                  min="1"
+                  value="1"
+                  class="vallari-product-quantity__input"
+                  data-quantity-input
+                >
+
+                <button
+                  type="button"
+                  class="vallari-product-quantity__button"
+                  data-quantity-plus
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
+              </div>
+
+              <button
+                type="submit"
+                name="add"
+                class="vallari-product-add"
+                data-add-to-cart
+                {% unless selected_variant.available %}
+                  disabled
+                {% endunless %}
+              >
+                <span data-add-to-cart-text>
+                  {% if selected_variant.available %}
+                    Add to cart
+                  {% else %}
+                    Sold out
+                  {% endif %}
+                </span>
+
+                <span aria-hidden="true"> → </span>
+              </button>
+            </div>
+
+            {% if section.settings.show_dynamic_checkout %}
+              <div class="vallari-product-checkout">
+                {{ form | payment_button }}
+              </div>
+            {% endif %}
+          </div>
+        {% endform %}
+
+        <div class="vallari-product-trust">
+          {% if section.settings.shipping_text != blank %}
+            <div class="vallari-product-trust__item">
+              <span class="vallari-product-trust__icon" aria-hidden="true"> ◇ </span>
+
+              <span>
+                {{ section.settings.shipping_text }}
+              </span>
+            </div>
+          {% endif %}
+
+          {% if section.settings.returns_text != blank %}
+            <div class="vallari-product-trust__item">
+              <span class="vallari-product-trust__icon" aria-hidden="true"> ↩ </span>
+
+              <span>
+                {{ section.settings.returns_text }}
+              </span>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="vallari-product-accordions">
+          {% if section.settings.product_details != blank %}
+            <details class="vallari-product-accordion">
+              <summary class="vallari-product-accordion__summary">
+                <span>Product Details</span>
+
+                <span
+                  class="vallari-product-accordion__icon"
+                  aria-hidden="true"
+                >
+                  +
+                </span>
+              </summary>
+
+              <div class="vallari-product-accordion__content">
+                {{ section.settings.product_details }}
+              </div>
+            </details>
+          {% endif %}
+
+          {% if section.settings.shipping_returns != blank %}
+            <details class="vallari-product-accordion">
+              <summary class="vallari-product-accordion__summary">
+                <span>Shipping & Returns</span>
+
+                <span
+                  class="vallari-product-accordion__icon"
+                  aria-hidden="true"
+                >
+                  +
+                </span>
+              </summary>
+
+              <div class="vallari-product-accordion__content">
+                {{ section.settings.shipping_returns }}
+              </div>
+            </details>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script
+    type="application/json"
+    data-product-variants
+  >
+    {{ product.variants | json }}
+  </script>
+</section>
+
+{% stylesheet %}
+  .vallari-product-page {
+    width: 100%;
+    padding: 48px 0 120px;
+    background: #fff8f6;
+    color: #323232;
+  }
+
+  .vallari-product-page__container {
+    width: calc(100% - 40px);
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+
+  /* Layout */
+
+  .vallari-product-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  /* Gallery */
+
+  .vallari-product-gallery {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .vallari-product-gallery__main {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #efeded;
+  }
+
+  .vallari-product-gallery__media {
+    width: 100%;
+    height: 100%;
+  }
+
+  .vallari-product-gallery__media--hidden {
+    display: none;
+  }
+
+  .vallari-product-gallery__image,
+  .vallari-product-gallery__video,
+  .vallari-product-gallery__media video,
+  .vallari-product-gallery__media iframe,
+  .vallari-product-gallery__media model-viewer {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .vallari-product-gallery__placeholder {
+    width: 100%;
+    height: 100%;
+  }
+
+  .vallari-product-gallery__placeholder svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .vallari-product-thumbnails {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    margin-top: 16px;
+    padding-bottom: 3px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .vallari-product-thumbnails::-webkit-scrollbar {
+    display: none;
+  }
+
+  .vallari-product-thumbnail {
+    width: 88px;
+    height: 88px;
+    flex: 0 0 88px;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #d8c2bc;
+    border-radius: 8px;
+    background: transparent;
+    opacity: 0.7;
+    cursor: pointer;
+    transition: opacity 0.2s ease, border-color 0.2s ease;
+  }
+
+  .vallari-product-thumbnail:hover {
+    opacity: 1;
+  }
+
+  .vallari-product-thumbnail--active {
+    border: 2px solid #323232;
+    opacity: 1;
+  }
+
+  .vallari-product-thumbnail__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Information */
+
+  .vallari-product-info {
+    width: 100%;
+  }
+
+  .vallari-product-info__eyebrow {
+    margin-bottom: 16px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #5e5e5e;
+  }
+
+  .vallari-product-info__title {
+    margin: 0 0 12px;
+    font-family: 'Libre Caslon Text', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: #323232;
+  }
+
+  /* Reviews */
+
+  .vallari-product-reviews {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    color: #5e5e5e;
+  }
+
+  .vallari-product-reviews__stars {
+    color: #c5806b;
+    letter-spacing: 2px;
+  }
+
+  /* Price */
+
+  .vallari-product-price {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    font-family: 'Libre Caslon Text', serif;
+    font-size: 24px;
+    line-height: 1.4;
+  }
+
+  .vallari-product-price__compare {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    color: #85736e;
+    text-decoration: line-through;
+  }
+
+  /* Description */
+
+  .vallari-product-description {
+    margin-bottom: 40px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #53433f;
+  }
+
+  .vallari-product-description > *:first-child {
+    margin-top: 0;
+  }
+
+  .vallari-product-description > *:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Options */
+
+  .vallari-product-options {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-bottom: 40px;
+  }
+
+  .vallari-product-option {
+    padding: 0;
+    margin: 0;
+    border: 0;
+  }
+
+  .vallari-product-option__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 14px;
+  }
+
+  .vallari-product-option__name {
+    padding: 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .vallari-product-option__selected {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    color: #5e5e5e;
+  }
+
+  /* Generic option buttons */
+
+  .vallari-product-option-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .vallari-product-option-button {
+    min-height: 48px;
+    padding: 10px 16px;
+    border: 1px solid #d8c2bc;
+    border-radius: 4px;
+    background: transparent;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    color: #5e5e5e;
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+  }
+
+  .vallari-product-option-button:hover,
+  .vallari-product-option-button--selected {
+    border-color: #323232;
+    color: #323232;
+  }
+
+  /* Color options */
+
+  .vallari-product-colors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+
+  .vallari-product-color {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 7px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    cursor: pointer;
+  }
+
+  .vallari-product-color__swatch {
+    display: flex;
+    width: 42px;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    background: var(--swatch-color);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  }
+
+  .vallari-product-color--selected .vallari-product-color__swatch {
+    border-color: #323232;
+  }
+
+  .vallari-product-color__check {
+    visibility: hidden;
+    font-size: 15px;
+    color: currentColor;
+  }
+
+  .vallari-product-color--selected .vallari-product-color__check {
+    visibility: visible;
+  }
+
+  .vallari-product-color__label {
+    font-size: 12px;
+    color: #5e5e5e;
+  }
+
+  .vallari-product-color--selected .vallari-product-color__label {
+    color: #323232;
+    font-weight: 600;
+  }
+
+  /* Purchase */
+
+  .vallari-product-purchase {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 38px;
+  }
+
+  .vallari-product-purchase__row {
+    display: flex;
+    gap: 14px;
+  }
+
+  .vallari-product-quantity {
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    width: 132px;
+    height: 52px;
+    flex: 0 0 132px;
+    border: 1px solid #d8c2bc;
+    border-radius: 4px;
+  }
+
+  .vallari-product-quantity__button {
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: 20px;
+    color: #5e5e5e;
+    cursor: pointer;
+  }
+
+  .vallari-product-quantity__button:hover {
+    color: #8a4f3c;
+  }
+
+  .vallari-product-quantity__input {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    text-align: center;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    color: #323232;
+    appearance: textfield;
+  }
+
+  .vallari-product-quantity__input::-webkit-inner-spin-button,
+  .vallari-product-quantity__input::-webkit-outer-spin-button {
+    margin: 0;
+    -webkit-appearance: none;
+  }
+
+  .vallari-product-add {
+    display: flex;
+    flex: 1;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0 24px;
+    border: 0;
+    border-radius: 4px;
+    background: #c5806b;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .vallari-product-add:hover {
+    background: #b0725f;
+  }
+
+  .vallari-product-add:disabled {
+    background: #c7c6c6;
+    cursor: not-allowed;
+  }
+
+  /* Shopify dynamic checkout */
+
+  .vallari-product-checkout .shopify-payment-button {
+    width: 100%;
+  }
+
+  .vallari-product-checkout .shopify-payment-button__button--unbranded {
+    min-height: 52px !important;
+    border: 1px solid #8a4f3c !important;
+    border-radius: 4px !important;
+    background: transparent !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.04em !important;
+    text-transform: uppercase !important;
+    color: #8a4f3c !important;
+    box-shadow: none !important;
+  }
+
+  .vallari-product-checkout .shopify-payment-button__button--unbranded:hover {
+    background: #ede0dd !important;
+  }
+
+  /* Trust */
+
+  .vallari-product-trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 24px 0;
+    margin-bottom: 4px;
+    border-top: 1px solid #d8c2bc;
+  }
+
+  .vallari-product-trust__item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    color: #5e5e5e;
+  }
+
+  .vallari-product-trust__icon {
+    font-size: 22px;
+  }
+
+  /* Accordions */
+
+  .vallari-product-accordions {
+    border-top: 1px solid #d8c2bc;
+  }
+
+  .vallari-product-accordion {
+    border-bottom: 1px solid #d8c2bc;
+  }
+
+  .vallari-product-accordion__summary {
+    display: flex;
+    width: 100%;
+    min-height: 58px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 16px;
+    color: #323232;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .vallari-product-accordion__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .vallari-product-accordion__icon {
+    font-size: 23px;
+    transition: transform 0.25s ease;
+  }
+
+  .vallari-product-accordion[open] .vallari-product-accordion__icon {
+    transform: rotate(45deg);
+  }
+
+  .vallari-product-accordion__content {
+    padding: 0 0 22px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #53433f;
+  }
+  .vallari-product-back {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 20px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #5e5e5e;
+    text-decoration: none;
+  }
+
+  .vallari-product-back:hover {
+    color: #8a4f3c;
+  }
+  /* Desktop */
+
+  @media screen and (min-width: 750px) {
+    .vallari-product-page {
+      padding-top: 56px;
+    }
+
+    .vallari-product-page__container {
+      width: calc(100% - 80px);
+    }
+
+    .vallari-product-layout {
+      flex-direction: row;
+      align-items: flex-start;
+      gap: clamp(48px, 5vw, 96px);
+    }
+
+    .vallari-product-gallery {
+      width: 58%;
+    }
+
+    .vallari-product-info {
+      position: sticky;
+      top: 120px;
+      width: 42%;
+      padding-top: 32px;
+    }
+  }
+
+  @media screen and (min-width: 1200px) {
+    .vallari-product-gallery {
+      width: 60%;
+    }
+
+    .vallari-product-info {
+      width: 40%;
+    }
+  }
+
+  /* Mobile */
+
+  @media screen and (max-width: 749px) {
+    .vallari-product-page {
+      padding-top: 24px;
+      padding-bottom: 72px;
+    }
+
+    .vallari-product-layout {
+      gap: 32px;
+    }
+
+    .vallari-product-info__title {
+      font-size: 40px;
+      line-height: 1.15;
+    }
+
+    .vallari-product-purchase__row {
+      flex-wrap: wrap;
+    }
+
+    .vallari-product-quantity {
+      width: 100%;
+      flex-basis: 100%;
+    }
+
+    .vallari-product-add {
+      width: 100%;
+      flex-basis: 100%;
+    }
+
+    .vallari-product-thumbnail {
+      width: 76px;
+      height: 76px;
+      flex-basis: 76px;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  class VallariProduct {
+    constructor(section) {
+      this.section = section;
+      this.currency = section.dataset.currency || 'CAD';
+
+      this.variants = JSON.parse(section.querySelector('[data-product-variants]').textContent);
+
+      this.variantInput = section.querySelector('[data-variant-id]');
+      this.price = section.querySelector('[data-product-price]');
+      this.addButton = section.querySelector('[data-add-to-cart]');
+      this.addButtonText = section.querySelector('[data-add-to-cart-text]');
+
+      this.selectedOptions = {};
+
+      this.setupInitialOptions();
+      this.bindOptionButtons();
+      this.bindGallery();
+      this.bindQuantity();
+    }
+
+    setupInitialOptions() {
+      this.section.querySelectorAll('[data-option-position]').forEach((group) => {
+        const selected = group.querySelector(
+          '.vallari-product-option-button--selected, .vallari-product-color--selected'
+        );
+
+        if (!selected) return;
+
+        const position = selected.dataset.optionPosition;
+
+        if (!position) return;
+
+        this.selectedOptions[position] = selected.dataset.optionValue;
+      });
+    }
+
+    bindOptionButtons() {
+      const buttons = this.section.querySelectorAll('[data-option-value][data-option-position]');
+
+      buttons.forEach((button) => {
+        button.addEventListener('click', () => {
+          const position = button.dataset.optionPosition;
+          const value = button.dataset.optionValue;
+
+          this.selectedOptions[position] = value;
+
+          const group = button.closest('.vallari-product-option');
+
+          group.querySelectorAll('[data-option-value]').forEach((optionButton) => {
+            optionButton.classList.remove('vallari-product-option-button--selected', 'vallari-product-color--selected');
+          });
+
+          if (button.classList.contains('vallari-product-color')) {
+            button.classList.add('vallari-product-color--selected');
+          } else {
+            button.classList.add('vallari-product-option-button--selected');
+          }
+
+          const selectedLabel = this.section.querySelector(`[data-selected-option="${position}"]`);
+
+          if (selectedLabel) {
+            selectedLabel.textContent = value;
+          }
+
+          this.updateVariant();
+        });
+      });
+    }
+
+    getSelectedVariant() {
+      return this.variants.find((variant) => {
+        return variant.options.every((option, index) => {
+          const position = String(index + 1);
+
+          return this.selectedOptions[position] === option;
+        });
+      });
+    }
+
+    updateVariant() {
+      const variant = this.getSelectedVariant();
+
+      if (!variant) {
+        this.variantInput.value = '';
+
+        if (this.addButton) {
+          this.addButton.disabled = true;
+        }
+
+        if (this.addButtonText) {
+          this.addButtonText.textContent = 'Unavailable';
+        }
+
+        return;
+      }
+
+      this.variantInput.value = variant.id;
+
+      this.updatePrice(variant);
+      this.updateAvailability(variant);
+      this.updateVariantMedia(variant);
+      this.updateUrl(variant);
+    }
+
+    updatePrice(variant) {
+      if (!this.price) return;
+
+      const money = (amount) => {
+        return new Intl.NumberFormat(document.documentElement.lang || 'en-CA', {
+          style: 'currency',
+          currency: this.currency,
+        }).format(amount / 100);
+      };
+
+      let markup = '';
+
+      if (variant.compare_at_price && variant.compare_at_price > variant.price) {
+        markup += `
+      <span class="vallari-product-price__compare">
+        ${money(variant.compare_at_price)}
+      </span>
+    `;
+      }
+
+      markup += `
+    <span class="vallari-product-price__current">
+      ${money(variant.price)}
+    </span>
+  `;
+
+      this.price.innerHTML = markup;
+    }
+
+    updateAvailability(variant) {
+      if (!this.addButton || !this.addButtonText) return;
+
+      if (variant.available) {
+        this.addButton.disabled = false;
+        this.addButtonText.textContent = 'Add to cart';
+      } else {
+        this.addButton.disabled = true;
+        this.addButtonText.textContent = 'Sold out';
+      }
+    }
+
+    updateVariantMedia(variant) {
+      if (!variant.featured_media) return;
+
+      this.showMedia(variant.featured_media.id);
+    }
+
+    updateUrl(variant) {
+      if (!history.replaceState) return;
+
+      const url = new URL(window.location.href);
+
+      url.searchParams.set('variant', variant.id);
+
+      window.history.replaceState({}, '', url.toString());
+    }
+
+    bindGallery() {
+      this.section.querySelectorAll('[data-media-target]').forEach((thumbnail) => {
+        thumbnail.addEventListener('click', () => {
+          this.showMedia(thumbnail.dataset.mediaTarget);
+        });
+      });
+    }
+
+    showMedia(mediaId) {
+      this.section.querySelectorAll('[data-product-media]').forEach((media) => {
+        media.classList.toggle(
+          'vallari-product-gallery__media--hidden',
+          String(media.dataset.productMedia) !== String(mediaId)
+        );
+      });
+
+      this.section.querySelectorAll('[data-media-target]').forEach((thumbnail) => {
+        thumbnail.classList.toggle(
+          'vallari-product-thumbnail--active',
+          String(thumbnail.dataset.mediaTarget) === String(mediaId)
+        );
+      });
+    }
+
+    bindQuantity() {
+      const input = this.section.querySelector('[data-quantity-input]');
+
+      const minus = this.section.querySelector('[data-quantity-minus]');
+
+      const plus = this.section.querySelector('[data-quantity-plus]');
+
+      if (!input) return;
+
+      minus?.addEventListener('click', () => {
+        const current = Number(input.value) || 1;
+
+        input.value = Math.max(1, current - 1);
+      });
+
+      plus?.addEventListener('click', () => {
+        const current = Number(input.value) || 1;
+
+        input.value = current + 1;
+      });
+    }
+  }
+
+  document.querySelectorAll('.vallari-product-page').forEach((section) => {
+    new VallariProduct(section);
+  });
+
+  document.addEventListener('shopify:section:load', (event) => {
+    const section = event.target.querySelector('.vallari-product-page');
+
+    if (section) {
+      new VallariProduct(section);
+    }
+  });
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Vallari main product",
+  "tag": "section",
+  "class": "vallari-main-product-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_reviews_placeholder",
+      "label": "Show review placeholder",
+      "default": false,
+      "info": "Use this only until a real Shopify reviews app is connected."
+    },
+    {
+      "type": "text",
+      "id": "review_text",
+      "label": "Review text",
+      "default": "4.8 (124 reviews)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "Show dynamic checkout button",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "shipping_text",
+      "label": "Shipping trust message",
+      "default": "Ships from Canada"
+    },
+    {
+      "type": "text",
+      "id": "returns_text",
+      "label": "Returns trust message",
+      "default": "Easy returns"
+    },
+    {
+      "type": "richtext",
+      "id": "product_details",
+      "label": "Product details",
+      "default": "<p>Carefully selected premium décor designed for event styling, special occasions, and sophisticated interior displays.</p>"
+    },
+    {
+      "type": "richtext",
+      "id": "shipping_returns",
+      "label": "Shipping & returns",
+      "default": "<p>Orders are processed promptly. Shipping times vary by destination. Contact us if you have questions about your order or return.</p>"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vallari main product"
+    }
+  ]
+}
+{% endschema %}

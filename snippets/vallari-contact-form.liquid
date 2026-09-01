@@ -1,0 +1,110 @@
+{% comment %}
+  Reusable Vallari contact form.
+
+  Optional parameters:
+  - form_id
+  - heading
+  - button_label
+{% endcomment %}
+
+{% liquid
+  if form_id == blank
+    assign form_id = 'VallariContactForm'
+  endif
+
+  if button_label == blank
+    assign button_label = 'Send message'
+  endif
+%}
+
+<div class="vallari-contact-form__panel">
+  {% if heading != blank %}
+    <h2 class="vallari-contact-form__heading">
+      {{ heading | escape }}
+    </h2>
+  {% endif %}
+
+  {% form 'contact', id: form_id, class: 'vallari-contact-form' %}
+    {% if form.posted_successfully? %}
+      <p
+        class="vallari-contact-form__notice"
+        role="status"
+      >
+        Thank you—your message has been submitted.
+      </p>
+
+    {% else %}
+      {% if form.errors %}
+        <div
+          id="{{ form_id }}-errors"
+          class="vallari-contact-form__notice"
+          role="alert"
+        >
+          <p>Please review the following:</p>
+
+          {{ form.errors | default_errors }}
+        </div>
+      {% endif %}
+
+      <div class="vallari-contact-form__field">
+        <label for="{{ form_id }}-name"> Name </label>
+
+        <input
+          type="text"
+          id="{{ form_id }}-name"
+          name="contact[name]"
+          autocomplete="name"
+          value="{{ form.name | default: customer.name | escape }}"
+          required
+        >
+      </div>
+
+      <div class="vallari-contact-form__field">
+        <label for="{{ form_id }}-email"> Email </label>
+
+        <input
+          type="email"
+          id="{{ form_id }}-email"
+          name="contact[email]"
+          autocomplete="email"
+          autocapitalize="off"
+          spellcheck="false"
+          value="{{ form.email | default: customer.email | escape }}"
+          {% if form.errors contains 'email' %}
+            aria-invalid="true"
+            aria-describedby="{{ form_id }}-errors"
+          {% endif %}
+          required
+        >
+      </div>
+
+      <div class="vallari-contact-form__field">
+        <label for="{{ form_id }}-message"> How can we help? </label>
+
+        <textarea
+          id="{{ form_id }}-message"
+          name="contact[body]"
+          rows="6"
+          required
+        >{{ form.body | escape }}</textarea>
+      </div>
+
+      {% if shop.privacy_policy.url != blank %}
+        <p class="vallari-contact-form__privacy">
+          Read our
+          <a href="{{ shop.privacy_policy.url }}"> privacy policy </a>
+          for information about how we handle your details.
+        </p>
+      {% endif %}
+
+      <button
+        class="vallari-contact-form__button"
+        type="submit"
+      >
+        {{ button_label | escape }}
+
+        <span aria-hidden="true"> ↗ </span>
+      </button>
+    {% endif %}
+  {% endform %}
+</div>

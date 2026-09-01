@@ -1,0 +1,68 @@
+{% style %}
+    /* Font faces */
+    {{ settings.type_primary_font | font_face: font_display: 'swap' }}
+    {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
+    {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+    {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+
+    :root {
+      --color-main-background: {{ settings.main_background_color }};
+      --color-main-text: {{ settings.main_text_color }};
+      --color-main-accent: {{ settings.main_accent_color }};
+      /* Typography */
+      --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
+      --font-primary--style: {{ settings.type_primary_font.style }};
+      --font-primary--weight: {{ settings.type_primary_font.weight }};
+
+      /* Layout */
+      --page-width: {{ settings.max_page_width }};
+      --page-margin: {{ settings.min_page_margin }}px;
+
+      /*
+       * Global colour tokens.
+       * Values come from Shopify Theme settings > Colours.
+       * Component styles should reference these variables,
+       * rather than hardcoding colours or reading settings directly.
+       */
+
+      /* Backgrounds and text */
+      --color-background: {{ settings.background_color }};
+      --color-foreground: {{ settings.foreground_color }};
+      --color-surface: {{ settings.surface_color }};
+      --color-text-muted: {{ settings.muted_text_color }};
+
+      /* Primary buttons */
+      --color-button-background: {{ settings.button_background_color }};
+      --color-button-text: {{ settings.button_text_color }};
+      --color-button-background-hover: {{ settings.button_hover_background_color }};
+
+      /* Decorative accents */
+      --color-accent: {{ settings.accent_color }};
+      --color-accent-background: {{ settings.accent_background_color }};
+      --color-highlight: {{ settings.highlight_color }};
+
+      /* Form controls */
+      --style-border-radius-inputs: {{ settings.input_corner_radius }}px;
+      /* Shared borders and control backgrounds */
+  --color-border: color-mix(
+    in srgb,
+    var(--color-accent) 20%,
+    transparent
+  );
+
+  --color-control-background: color-mix(
+    in srgb,
+    var(--color-background) 85%,
+    var(--color-surface)
+  );
+
+  /* Decorative brand treatment */
+  --gradient-brand: linear-gradient(
+    105deg,
+    var(--color-surface),
+    var(--color-accent-background) 40%,
+    var(--color-highlight)
+  );
+
+    }
+{% endstyle %}

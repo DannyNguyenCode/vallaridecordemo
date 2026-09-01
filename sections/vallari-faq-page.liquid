@@ -1,0 +1,733 @@
+{% liquid
+  assign topics = 'orders,custom,care,returns' | split: ','
+  assign contact_url = section.settings.contact_link
+
+  if contact_url == blank
+    assign contact_url = routes.root_url | append: '#contact'
+  endif
+%}
+
+<div class="vallari-section-inner vallari-faq-page__inner">
+  <div class="vallari-faq-page__hero">
+    <div class="vallari-faq-page__intro">
+      {% if section.settings.eyebrow != blank %}
+        <p class="vallari-faq-page__eyebrow">
+          {{ section.settings.eyebrow | escape }}
+        </p>
+      {% endif %}
+
+      <h1 class="vallari-faq-page__heading">
+        {{ section.settings.heading | escape }}
+      </h1>
+
+      {% if section.settings.description != blank %}
+        <p class="vallari-faq-page__description">
+          {{ section.settings.description | escape }}
+        </p>
+      {% endif %}
+
+      <a
+        class="vallari-faq-page__text-link"
+        href="{{ contact_url | escape }}"
+      >
+        {{ section.settings.contact_label | escape }}
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+
+    {% if section.blocks.size > 0 %}
+      <nav
+        class="vallari-faq-page__topics"
+        aria-label="FAQ topics"
+      >
+        <p class="vallari-faq-page__eyebrow">Jump to a topic</p>
+
+        <ul>
+          {% for topic in topics %}
+            {% liquid
+              assign title_setting = topic | append: '_heading'
+              assign topic_title = section.settings[title_setting]
+              assign has_questions = false
+
+              for block in section.blocks
+                if block.settings.topic == topic and block.settings.question != blank
+                  assign has_questions = true
+                  break
+                endif
+              endfor
+            %}
+
+            {% if has_questions %}
+              <li>
+                <a href="#FaqTopic-{{ section.id }}-{{ topic }}">
+                  <span>{{ topic_title | escape }}</span>
+                  <span aria-hidden="true">→</span>
+                </a>
+              </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+      </nav>
+    {% endif %}
+  </div>
+
+  <div class="vallari-faq-page__groups">
+    {% for topic in topics %}
+      {% liquid
+        assign title_setting = topic | append: '_heading'
+        assign topic_title = section.settings[title_setting]
+        assign question_count = 0
+      %}
+
+      {% capture topic_questions %}
+          {% for block in section.blocks %}
+            {% if block.settings.topic == topic and block.settings.question != blank %}
+              {% assign question_count = question_count | plus: 1 %}
+  
+              <details
+                class="vallari-faq-page__item"
+                {{ block.shopify_attributes }}
+              >
+                <summary class="vallari-faq-page__question">
+                  <span>{{ block.settings.question | escape }}</span>
+  
+                  <span
+                    class="vallari-faq-page__toggle"
+                    aria-hidden="true"
+                  ></span>
+                </summary>
+  
+                <div class="vallari-faq-page__answer vallari-prose">
+                  {% if block.settings.answer != blank %}
+                    {{ block.settings.answer }}
+                  {% else %}
+                    <p>
+                      Demo placeholder: add an owner-approved answer
+                      before publishing.
+                    </p>
+                  {% endif %}
+                </div>
+              </details>
+            {% endif %}
+          {% endfor %}
+        {% endcapture %}
+
+      {% if question_count > 0 %}
+        <section
+          id="FaqTopic-{{ section.id }}-{{ topic }}"
+          class="vallari-faq-page__group"
+          aria-labelledby="FaqHeading-{{ section.id }}-{{ topic }}"
+          tabindex="-1"
+        >
+          <div class="vallari-faq-page__group-header">
+            <h2 id="FaqHeading-{{ section.id }}-{{ topic }}">
+              {{ topic_title | escape }}
+            </h2>
+
+            <span class="vallari-faq-page__count">
+              {{ question_count }}
+              {% if question_count == 1 %}
+                question
+              {% else %}
+                questions
+              {% endif %}
+            </span>
+          </div>
+
+          <div class="vallari-faq-page__list">
+            {{ topic_questions }}
+          </div>
+        </section>
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="vallari-faq-page__help">
+    <h2>{{ section.settings.help_heading | escape }}</h2>
+
+    {% if section.settings.help_description != blank %}
+      <p>{{ section.settings.help_description | escape }}</p>
+    {% endif %}
+
+    <div class="vallari-faq-page__actions">
+      <a
+        class="vallari-faq-page__button"
+        href="{{ contact_url | escape }}"
+      >
+        {{ section.settings.contact_label | escape }}
+        <span aria-hidden="true">→</span>
+      </a>
+
+      <a
+        class="vallari-faq-page__button vallari-faq-page__button--secondary"
+        href="{{ routes.all_products_collection_url }}"
+      >
+        Back to shop
+      </a>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .shopify-section.vallari-faq-page {
+    display: block;
+    background: var(--color-background);
+    color: var(--color-foreground);
+
+    --faq-border: color-mix(in srgb, var(--color-accent) 25%, var(--color-background));
+
+    --faq-surface: color-mix(in srgb, var(--color-foreground) 3%, var(--color-background));
+  }
+
+  /* Plain hero: no background panel, border, or rounded box. */
+  .vallari-faq-page__hero {
+    display: flex;
+    align-items: center;
+    gap: clamp(2rem, 5vw, 5rem);
+    padding-block: 1rem clamp(3rem, 6vw, 5rem);
+  }
+
+  .vallari-faq-page__intro {
+    flex: 3 1 0;
+    min-width: 0;
+  }
+
+  .vallari-faq-page__eyebrow {
+    margin: 0 0 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  .vallari-faq-page__heading,
+  .vallari-faq-page__group-header h2,
+  .vallari-faq-page__help h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: var(--font-heading--weight, 600);
+    overflow-wrap: anywhere;
+  }
+
+  .vallari-faq-page__heading {
+    max-width: 15ch;
+    margin: 0;
+    color: var(--color-accent);
+    font-size: clamp(2.5rem, 4.5vw, 4rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    text-wrap: balance;
+  }
+
+  .vallari-faq-page__description {
+    max-width: 52ch;
+    margin: 1.25rem 0 0;
+    color: var(--color-text-muted);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .vallari-faq-page__text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    margin-top: 0.5rem;
+    color: var(--color-foreground);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  /* Topic navigation remains a separate, smaller card. */
+  .vallari-faq-page__topics {
+    box-sizing: border-box;
+    flex: 2 1 0;
+    min-width: 0;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--faq-border);
+    border-radius: var(--radius-card, 1.5rem);
+    background: var(--faq-surface);
+  }
+
+  .vallari-faq-page__topics ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .vallari-faq-page__topics a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 44px;
+    padding-block: 0.5rem;
+    color: var(--color-foreground);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+
+  .vallari-faq-page__topics a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+
+  /* Topic groups and two-column question layout. */
+  .vallari-faq-page__groups {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .vallari-faq-page__group {
+    min-width: 0;
+    scroll-margin-top: 7rem;
+  }
+
+  .vallari-faq-page__group-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.875rem;
+    border-bottom: 1px solid var(--faq-border);
+  }
+
+  .vallari-faq-page__group-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    line-height: 1.4;
+  }
+
+  .vallari-faq-page__count {
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .vallari-faq-page__list {
+    --faq-gap: var(--layout-card-gap, 0.75rem);
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--faq-gap);
+  }
+
+  .vallari-faq-page__item {
+    box-sizing: border-box;
+    flex: 0 0 calc((100% - var(--faq-gap)) / 2);
+    min-width: 0;
+    border: 1px solid var(--faq-border);
+    border-radius: var(--radius-card, 1.5rem);
+    background: var(--faq-surface);
+  }
+
+  .vallari-faq-page__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 44px;
+    padding: 1rem 1.25rem;
+    border-radius: inherit;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.5;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .vallari-faq-page__question::-webkit-details-marker {
+    display: none;
+  }
+
+  .vallari-faq-page__question > span:first-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .vallari-faq-page__toggle {
+    position: relative;
+    flex: 0 0 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 1px solid var(--faq-border);
+    border-radius: 50%;
+  }
+
+  .vallari-faq-page__toggle::before,
+  .vallari-faq-page__toggle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0.5rem;
+    height: 1px;
+    background: currentColor;
+    transform: translate(-50%, -50%);
+  }
+
+  .vallari-faq-page__toggle::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  .vallari-faq-page__item[open] .vallari-faq-page__toggle::after {
+    display: none;
+  }
+
+  .vallari-faq-page__answer {
+    padding: 0 1.25rem 1.25rem;
+  }
+
+  /* Bottom contact callout. */
+  .vallari-faq-page__help {
+    margin-top: clamp(3rem, 6vw, 5rem);
+    padding: clamp(2rem, 4vw, 3rem);
+    border: 1px solid var(--faq-border);
+    border-radius: var(--radius-card, 1.5rem);
+    background: linear-gradient(
+      120deg,
+      var(--faq-surface),
+      color-mix(in srgb, var(--color-accent) 12%, var(--color-background))
+    );
+    text-align: center;
+  }
+
+  .vallari-faq-page__help h2 {
+    margin: 0;
+    color: var(--color-accent);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1.2;
+  }
+
+  .vallari-faq-page__help p {
+    max-width: 56ch;
+    margin: 1rem auto 0;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  .vallari-faq-page__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .vallari-faq-page__button {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    min-height: 44px;
+    padding: 0.875rem 1.5rem;
+    border: 1px solid var(--color-button-background);
+    border-radius: var(--radius-pill, 999px);
+    background: var(--color-button-background);
+    color: var(--color-button-text);
+    font-weight: 600;
+    line-height: 1.4;
+    text-decoration: none;
+  }
+
+  .vallari-faq-page__button:hover {
+    border-color: var(--color-button-background-hover);
+    background: var(--color-button-background-hover);
+  }
+
+  .vallari-faq-page__button--secondary {
+    border-color: var(--faq-border);
+    background: var(--color-background);
+    color: var(--color-foreground);
+  }
+
+  .vallari-faq-page__button--secondary:hover {
+    border-color: var(--color-foreground);
+    background: var(--faq-surface);
+  }
+
+  .vallari-faq-page :is(a, summary):focus-visible {
+    outline: 2px solid var(--color-foreground);
+    outline-offset: 4px;
+  }
+
+  @media (max-width: 749px) {
+    .vallari-faq-page__hero {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .vallari-faq-page__intro,
+    .vallari-faq-page__topics {
+      flex: none;
+    }
+
+    .vallari-faq-page__item {
+      flex-basis: 100%;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Vallari FAQ page",
+  "tag": "section",
+  "class": "vallari-faq-page",
+  "limit": 1,
+  "max_blocks": 40,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hero"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small heading",
+      "default": "Frequently asked"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Page heading",
+      "default": "Good questions, honest answers."
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Description",
+      "default": "Questions about décor, orders, and caring for your pieces? Start here."
+    },
+    {
+      "type": "header",
+      "content": "Topic headings"
+    },
+    {
+      "type": "text",
+      "id": "orders_heading",
+      "label": "Orders topic",
+      "default": "Orders & shipping"
+    },
+    {
+      "type": "text",
+      "id": "custom_heading",
+      "label": "Custom topic",
+      "default": "Custom florals & events"
+    },
+    {
+      "type": "text",
+      "id": "care_heading",
+      "label": "Care topic",
+      "default": "Product care"
+    },
+    {
+      "type": "text",
+      "id": "returns_heading",
+      "label": "Returns topic",
+      "default": "Returns & wholesale"
+    },
+    {
+      "type": "header",
+      "content": "Contact callout"
+    },
+    {
+      "type": "text",
+      "id": "help_heading",
+      "label": "Heading",
+      "default": "Didn't find your answer?"
+    },
+    {
+      "type": "textarea",
+      "id": "help_description",
+      "label": "Description",
+      "default": "Have another question? Get in touch with Vallari Decor."
+    },
+    {
+      "type": "text",
+      "id": "contact_label",
+      "label": "Contact link label",
+      "default": "Contact us"
+    },
+    {
+      "type": "url",
+      "id": "contact_link",
+      "label": "Contact destination",
+      "info": "Leave empty to link to the homepage contact section."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        {
+          "type": "select",
+          "id": "topic",
+          "label": "Topic",
+          "options": [
+            {
+              "value": "orders",
+              "label": "Orders"
+            },
+            {
+              "value": "custom",
+              "label": "Custom"
+            },
+            {
+              "value": "care",
+              "label": "Care"
+            },
+            {
+              "value": "returns",
+              "label": "Returns"
+            }
+          ],
+          "default": "orders"
+        },
+        {
+          "type": "text",
+          "id": "question",
+          "label": "Question",
+          "default": "Add a question"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "info": "Use owner-approved information. Blank answers display a demo placeholder."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Vallari FAQ page",
+      "blocks": [
+        {
+          "type": "question",
+          "settings": {
+            "topic": "orders",
+            "question": "Where do you ship?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "topic": "orders",
+            "question": "How long will my order take to arrive?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "topic": "orders",
+            "question": "How are fragile items packed?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "topic": "orders",
+            "question": "Can I track my order?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "topic": "custom",
+            "question": "Do you create custom arrangements?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "topic": "custom",
+            "question": "How far in advance should I enquire about event décor?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "topic": "custom",
+            "question": "Do you offer rentals for events?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "topic": "custom",
+            "question": "Can you match my wedding colours?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "topic": "care",
+            "question": "How do I keep artificial florals looking fresh?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "topic": "care",
+            "question": "How should I care for dried botanicals?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "topic": "care",
+            "question": "How do I clean vases and candle holders?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "topic": "care",
+            "question": "Can artificial florals go outdoors?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "topic": "returns",
+            "question": "What is your return policy?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "topic": "returns",
+            "question": "Do you sell wholesale?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "topic": "returns",
+            "question": "Can I pick up my order in Toronto?"
+          }
+        },
+        {
+          "type": "question",
+          "settings": {
+            "topic": "returns",
+            "question": "Do you offer gift cards?"
+          }
+        }
+      ]
+    }
+  ],
+  "enabled_on": {
+    "templates": ["page"]
+  }
+}
+{% endschema %}
